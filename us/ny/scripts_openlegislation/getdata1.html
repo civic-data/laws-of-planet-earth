@@ -15,7 +15,7 @@
 $( document ).ready(function() {
 for(i=1; i< 1000; i++){
 //for(i=1; i< 10; i++){
-$.getJSON("///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx="+i+"&sort=modified&sortOrder=true&term=message+of+necessity&callback=?", function(result){
+$.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term="message+of+necessity"&callback=?', function(result){
 
     //console.log(result);
     if (result['response']['results'][0]['otype'] == "bill"){
