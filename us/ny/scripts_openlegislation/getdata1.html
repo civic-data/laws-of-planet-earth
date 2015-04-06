@@ -20,30 +20,30 @@ $.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=
     //console.log(result);
     if (result['response']['results'][0]['otype'] == "bill"){
         //console.log(result['response']['results'][0]['data']['bill']['actions'][0]['date'])
-        log('<hr/><b><div class="highlight1">'+ new Date(parseInt(result['response']['results'][0]['data']['bill']['actions'][0]['date']))+ "</div></b>")
-        log('<div class="highlight1"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>') 
-        log("<b>length: </b> "+ result['response']['results'].length + "</b>")
+        log('<hr/><b><div class="highlight1">'+ new Date(parseInt(result['response']['results'][0]['data']['bill']['actions'][0]['date']))+ "</div></b>");
+        log('<div class="highlight1"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        log("<b>length: </b> "+ result['response']['results'].length + "</b>");
         //console.log(result['response']['results'][0]['data']['bill']['title'])
-        log("<b>title:</b> " + result['response']['results'][0]['data']['bill']['title'])
-        log("<b>sponsor:</b> " + result['response']['results'][0]['data']['bill']['sponsor']['fullname'])
+        log("<b>title:</b> " + result['response']['results'][0]['data']['bill']['title']);
+        log("<b>sponsor:</b> " + result['response']['results'][0]['data']['bill']['sponsor']['fullname']);
     }
     // result['response']['results'][0]['otype']
     else if (result['response']['results'][0]['otype'] == "action"){
-        log('<hr/><b><div class="highlight2">'+ new Date(parseInt(result['response']['results'][0]['data']['action']['date']))+ "</div></b>")
-        log('<div class="highlight2"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>') 
+        log('<hr/><b><div class="highlight2">'+ new Date(parseInt(result['response']['results'][0]['data']['action']['date']))+ "</div></b>");
+        log('<div class="highlight2"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
     else if (result['response']['results'][0]['otype'] == "transcript"){
-        log('<hr/><b><div class="highlight3">'+ result['response']['results'][0]['otype'] + "</div></b>")
+        log('<hr/><b><div class="highlight3">'+ result['response']['results'][0]['otype'] + "</div></b>");
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
-        log('<div class="highlight3"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>') 
+        log('<div class="highlight3"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
     }
     else {
-        log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][0]['otype'] + "</div></b>")
+        log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][0]['otype'] + "</div></b>");
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
-    log("<b>id:</b> "+ result['response']['results'][0]['oid'])
-    log('<b>url:</b> <a href="' + result['response']['results'][0]['url'] + '">' + result['response']['results'][0]['url'] + '</a>') 
+    log("<b>id:</b> "+ result['response']['results'][0]['oid']);
+    log('<b>url:</b> <a href="' + result['response']['results'][0]['url'] + '">' + result['response']['results'][0]['url'] + '</a>');
 });
 }
 
@@ -51,7 +51,7 @@ $.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=
 
 function log(s){
 //console.log(s)
-$("#data").append(s + '<br/>')
+$("#data").append(s + '<br/>');
 }
 
 </script>
