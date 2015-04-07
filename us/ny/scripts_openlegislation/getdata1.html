@@ -23,6 +23,8 @@ var rows = [];
 var queue = [];
 var pending = null;
 var max = 700;
+//var max = 10;
+//var max = 2;
 
 var closure1  =
 function(result){
@@ -34,7 +36,7 @@ function(result){
         var url = item.url;
         //$("#message").text(url);
         //$("#message").text("(" + item.count + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " + url);
-        $("#message").text("(" + item.count + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
+        $("#message").text("(" + (item.count+1) + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
         pending = $.getJSON(url, closure1);
     }
     
@@ -174,6 +176,7 @@ if (queue.length > 0){
     //$.getJSON(queue.pop(), closure1);
     var item = queue.shift();
     var url = item.url;
+    $("#message").text("(" + (item.count+1) + " of "+ max + ") reading " );
     pending = $.getJSON(url, closure1);
 }
 
