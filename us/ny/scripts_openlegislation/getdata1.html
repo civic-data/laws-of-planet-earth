@@ -127,6 +127,8 @@ queue=[];
 
 window.location.hash='#'+escape(input);
 
+$("#search").val(input);
+
 $("#data").html('');
 $("#timeline").html('');
 rows = [];
@@ -151,6 +153,7 @@ var input = '"message of necessity"';
 if(window.location.hash.length > 1){
     //console.log(unescape(window.location.hash.substring(1)));
     input = unescape(window.location.hash.substring(1));
+    //$("#search").val(input);
 }
 //getdata('"message of necessity"');
 getdata(input);
@@ -201,7 +204,7 @@ $("#data").append(s + '<br/>');
 </script>
 </head>
 <body>
-Search: <input onchange="getdata(this.value);" />
+Search: <input id="search" onchange="getdata(this.value);" />
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
 <div id="timeline" style="width: 900px; height: 500px;"></div>
 <div id="data"></div>
