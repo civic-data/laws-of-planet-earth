@@ -7,6 +7,7 @@
 .highlight1 { background-color: #ffff00; }
 .highlight2 { background-color: #80ff00; }
 .highlight3 { background-color: #ff8000; }
+.highlight4 { background-color: #ff8080; }
 
 .highlight9 { background-color: #ff0000; }
 </style>
@@ -94,8 +95,23 @@ function(result){
         //google.setOnLoadCallback(drawChart);
         drawChart();
     }
+    else if (result['response']['results'][0]['otype'] == "meeting"){
+        var dateint1 = parseInt(result['response']['results'][0]['data']['meeting']['meetingDateTime']);
+        log('<hr/><b><div class="highlight4">'+ new Date(dateint1)+ "</div></b>");
+        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][0]['otype'] + "</div></b>");
+        //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
+        log('<div class="highlight4"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        //drawchart here
+        rows.push([ result['response']['results'][0]['oid'], 
+                new Date(dateint1),
+                new Date(dateint1+(1000*60*60*24))]
+        );
+        //google.setOnLoadCallback(drawChart);
+        drawChart();
+    }
     else {
         log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][0]['otype'] + "</div></b>");
+        console.log(result);
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
     log("<b>id:</b> "+ result['response']['results'][0]['oid']);
