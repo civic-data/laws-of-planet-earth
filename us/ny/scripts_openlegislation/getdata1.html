@@ -3,12 +3,14 @@
 <head>
 <!-- <script src="///code.jquery.com/jquery-1.11.2.min.js" ></script> -->
 <style>
+#message { font-size: 14pt; background-color:#e0e0e0;}
 #search { font-size: 20pt;}
 .highlight0 { background-color: #ff0000; font-size: 20pt;}
 .highlight1 { background-color: #ffff00; }
 .highlight2 { background-color: #80ff00; }
 .highlight3 { background-color: #ff8000; }
 .highlight4 { background-color: #ff8080; }
+.highlight5 { background-color: #808080; }
 
 .highlight9 { background-color: #ff0000; }
 </style>
@@ -20,6 +22,7 @@ var total_on_server= 0;
 var rows = [];
 var queue = [];
 var pending = null;
+var max = 700;
 
 var closure1  =
 function(result){
@@ -27,9 +30,11 @@ function(result){
     //console.log(result['response']);
     //console.log( result['response']['results'].length );
     if (queue.length > 0){
-        var url = queue.shift();
+        var item = queue.shift();
+        var url = item.url;
         //$("#message").text(url);
-        $("#message").text("reading " + JSON.stringify(result).length + " bytes " + url);
+        //$("#message").text("(" + item.count + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " + url);
+        $("#message").text("(" + item.count + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
         pending = $.getJSON(url, closure1);
     }
     
@@ -113,6 +118,24 @@ function(result){
         //google.setOnLoadCallback(drawChart);
         drawChart();
     }
+    else if (result['response']['results'][0]['otype'] == "vote"){
+        //console.log(result);
+        var dateint1 = parseInt(result['response']['results'][0]['data']['vote']['voteDate']);
+        var ayes = (result['response']['results'][0]['data']['vote']['ayes']).length;
+        var nays = (result['response']['results'][0]['data']['vote']['nays']).length;
+        log('<hr/><b><div class="highlight5">'+ new Date(dateint1)+ "</div></b>");
+        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][0]['otype'] + "</div></b>");
+        //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
+        log('<div class="highlight5"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        log('<b><div class="highlight9"> ayes: '+ ayes + ' nays: ' + nays + '</div></b>');
+        //drawchart here
+        rows.push([ result['response']['results'][0]['oid'], 
+                new Date(dateint1),
+                new Date(dateint1+(1000*60*60*24))]
+        );
+        //google.setOnLoadCallback(drawChart);
+        drawChart();
+    }
     else {
         log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][0]['otype'] + "</div></b>");
         console.log(result);
@@ -140,16 +163,18 @@ total_on_server= 0;
 
 //for(i=1; i< 1000; i++){
 //for(i=1; i< 100; i++){
-for(i=1; i< 700; i++){
+for(i=1; i< max; i++){
 //for(i=1; i< 40; i++){
 //console.log(input);
-queue.push( '///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?');
+queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?'});
 //queue.unshift( '///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?');
 }
 
 if (queue.length > 0){
     //$.getJSON(queue.pop(), closure1);
-    pending = $.getJSON(queue.shift(), closure1);
+    var item = queue.shift();
+    var url = item.url;
+    pending = $.getJSON(url, closure1);
 }
 
 }
