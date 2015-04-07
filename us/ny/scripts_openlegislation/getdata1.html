@@ -17,6 +17,7 @@
 var total_on_server= 0;
 var rows = [];
 var queue = [];
+var pending = null;
 
 var closure1  =
 function(result){
@@ -24,7 +25,7 @@ function(result){
     //console.log( result['response']['results'].length );
     if (queue.length > 0){
         //$.getJSON(queue.pop(), closure1);
-        $.getJSON(queue.shift(), closure1);
+        pending = $.getJSON(queue.shift(), closure1);
     }
     
     if ( result['response']['results'].length <= 0 ){
@@ -102,6 +103,11 @@ function(result){
 }
 
 function getdata(input){
+if (pending != null) {
+pending.abort();
+pending=null;
+}
+queue=[];
 
 window.location.hash='#'+escape(input);
 
@@ -119,7 +125,7 @@ queue.push( '///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageId
 
 if (queue.length > 0){
     //$.getJSON(queue.pop(), closure1);
-    $.getJSON(queue.shift(), closure1);
+    pending = $.getJSON(queue.shift(), closure1);
 }
 
 }
