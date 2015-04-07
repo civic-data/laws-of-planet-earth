@@ -16,11 +16,17 @@
 <script>
 var total_on_server= 0;
 var rows = [];
+function getdata(input){
 
-$( document ).ready(function() {
-//for(i=1; i< 1000; i++){
-for(i=1; i< 40; i++){
-$.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term="message+of+necessity"&callback=?', function(result){
+$("#data").html('');
+$("#timeline").html('');
+rows = [];
+
+for(i=1; i< 1000; i++){
+//for(i=1; i< 40; i++){
+//console.log(input);
+//$.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term="message+of+necessity"&callback=?', function(result){
+$.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?', function(result){
 //$.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term="xxxxx"&callback=?', function(result){
 //$.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term="xxx"&callback=?', function(result){
 
@@ -90,6 +96,10 @@ $.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=
 });
 }
 
+}
+
+$( document ).ready(function() {
+getdata('"message of necessity"');
 });
 
 function log(s){
@@ -134,6 +144,7 @@ $("#data").append(s + '<br/>');
 </script>
 </head>
 <body>
+Search: <input onchange="getdata(this.value);" />
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
 <div id="timeline" style="width: 900px; height: 500px;"></div>
 <div id="data"></div>
