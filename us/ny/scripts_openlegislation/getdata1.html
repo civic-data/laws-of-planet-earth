@@ -54,6 +54,7 @@ $.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=
     //if ( i >= total_on_server){ return; }
 
     //console.log(result['response']['results'][0]['otype']);
+    //console.log(result);
 
     if (result['response']['results'][0]['otype'] == "bill"){
         //console.log(result['response']['results'][0]['data']['bill']['actions'][0]['date'])
@@ -88,9 +89,18 @@ $.getJSON('///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
     else if (result['response']['results'][0]['otype'] == "transcript"){
-        log('<hr/><b><div class="highlight3">'+ result['response']['results'][0]['otype'] + "</div></b>");
+        var dateint1 = parseInt(result['response']['results'][0]['data']['transcript']['timeStamp']);
+        log('<hr/><b><div class="highlight3">'+ new Date(dateint1)+ "</div></b>");
+        //log('<hr/><b><div class="highlight3">'+ result['response']['results'][0]['otype'] + "</div></b>");
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
         log('<div class="highlight3"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        //drawchart here
+        rows.push([ result['response']['results'][0]['oid'], 
+                new Date(dateint1),
+                new Date(dateint1+(1000*60*60*24))]
+        );
+        //google.setOnLoadCallback(drawChart);
+        drawChart();
     }
     else {
         log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][0]['otype'] + "</div></b>");
