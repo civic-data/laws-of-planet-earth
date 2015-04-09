@@ -2,7 +2,11 @@
 <html>
 <head>
 <!-- <script src="///code.jquery.com/jquery-1.11.2.min.js" ></script> -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+body{
+font: 16px Arial, sans-serif;
+}
 #message { font-size: 14pt; background-color:#e0e0e0;}
 #search { font-size: 20pt;}
 .highlight0 { background-color: #ff0000; font-size: 20pt;}
@@ -20,11 +24,58 @@
 <script>
 var total_on_server= 0;
 var rows = [];
+var rowssummary = [];
+var map1 = {};
 var queue = [];
 var pending = null;
 var max = 700;
-//var max = 10;
+//var max = 100;
 //var max = 2;
+
+
+
+function addData(str, dateint1){
+
+//console.log(typeof dateint1);
+        //var key = dateint1;
+        var key = new Date(dateint1).toLocaleDateString();
+        if (key in map1){
+            map1[key].count++;
+        } else {
+            map1[key]={count:1,val:dateint1};
+        }
+        rowssummary = [];
+
+        for (key in map1){
+        //console.log(key + " " + typeof key);
+        var obj = map1[key];
+        //console.log(obj);
+
+            rowssummary.push([ obj.count.toString(),
+                //new Date(parseInt(key)),
+                new Date(obj.val),
+                //new Date(parseInt(key)+(1000*60*60*24))]
+                new Date(obj.val+(1000*60*60*24))]
+        );
+        }
+
+        //console.log(rowssummary);
+        //rowssummary.sort(function (a,b) { return a[0].localeCompare(b[0]);});
+
+        rowssummary.sort(function (a,b) { i=parseInt(a[0]); j=parseInt(b[0]); return (i > j) ? -1 : ((j > i) ? +1 : 0);});
+
+//return (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0);}
+
+        drawChartSummary();
+
+        //console.log(map1);
+        rows.push([ str,
+                new Date(dateint1),
+                new Date(dateint1+(1000*60*60*24))]
+        );
+        //google.setOnLoadCallback(drawChart);
+        drawChart();
+}
 
 var closure1  =
 function(result){
@@ -65,12 +116,7 @@ function(result){
         var dateint1 = parseInt(result['response']['results'][0]['data']['bill']['actions'][0]['date']);
 
         log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
-        rows.push([ result['response']['results'][0]['oid'], 
-                new Date(dateint1),
-                new Date(dateint1+(1000*60*60*24))]
-        );
-        //google.setOnLoadCallback(drawChart);
-        drawChart();
+        addData( result['response']['results'][0]['oid'], dateint1);
 
         log('<div class="highlight1"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
         log("<b>length: </b> "+ result['response']['results'].length + "</b>");
@@ -83,12 +129,7 @@ function(result){
         var dateint1 = parseInt(result['response']['results'][0]['data']['action']['date']);
         //drawchart here
         log('<hr/><b><div class="highlight2">'+ new Date(dateint1)+ "</div></b>");
-        rows.push([ result['response']['results'][0]['oid'], 
-                new Date(dateint1),
-                new Date(dateint1+(1000*60*60*24))]
-        );
-        //google.setOnLoadCallback(drawChart);
-        drawChart();
+        addData( result['response']['results'][0]['oid'], dateint1);
         log('<div class="highlight2"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
@@ -99,12 +140,7 @@ function(result){
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
         log('<div class="highlight3"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
         //drawchart here
-        rows.push([ result['response']['results'][0]['oid'], 
-                new Date(dateint1),
-                new Date(dateint1+(1000*60*60*24))]
-        );
-        //google.setOnLoadCallback(drawChart);
-        drawChart();
+        addData( result['response']['results'][0]['oid'], dateint1);
     }
     else if (result['response']['results'][0]['otype'] == "meeting"){
         var dateint1 = parseInt(result['response']['results'][0]['data']['meeting']['meetingDateTime']);
@@ -113,12 +149,7 @@ function(result){
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
         log('<div class="highlight4"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
         //drawchart here
-        rows.push([ result['response']['results'][0]['oid'], 
-                new Date(dateint1),
-                new Date(dateint1+(1000*60*60*24))]
-        );
-        //google.setOnLoadCallback(drawChart);
-        drawChart();
+        addData( result['response']['results'][0]['oid'], dateint1);
     }
     else if (result['response']['results'][0]['otype'] == "vote"){
         //console.log(result);
@@ -131,16 +162,11 @@ function(result){
         log('<div class="highlight5"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
         log('<b><div class="highlight9"> ayes: '+ ayes + ' nays: ' + nays + '</div></b>');
         //drawchart here
-        rows.push([ result['response']['results'][0]['oid'], 
-                new Date(dateint1),
-                new Date(dateint1+(1000*60*60*24))]
-        );
-        //google.setOnLoadCallback(drawChart);
-        drawChart();
+        addData( result['response']['results'][0]['oid'], dateint1);
     }
     else {
         log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][0]['otype'] + "</div></b>");
-        console.log(result);
+        //console.log(result);
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
     log("<b>id:</b> "+ result['response']['results'][0]['oid']);
@@ -159,6 +185,7 @@ window.location.hash='#'+escape(input);
 $("#search").val(input);
 
 $("#data").html('');
+$("#timelinesummary").html('');
 $("#timeline").html('');
 rows = [];
 total_on_server= 0;
@@ -197,6 +224,23 @@ function log(s){
 //console.log(s)
 $("#data").append(s + '<br/>');
 }
+
+      function drawChartSummary() {
+        var container = document.getElementById('timelinesummary');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'Event' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        //console.log(rows);
+        dataTable.addRows( rowssummary);
+
+        var options = {
+            timeline: { singleColor: '#ff08d8' },
+        };
+        chart.draw(dataTable,options);
+      }
 
       function drawChart() {
         var container = document.getElementById('timeline');
@@ -241,6 +285,9 @@ $("#data").append(s + '<br/>');
 Search: <input id="search" onchange="getdata(this.value);" /><br/><br/>
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
 <div id="message"></div>
+<hr/>Number of References Timeline<br/>
+<div id="timelinesummary" style="width: 900px; height: 200px;"></div>
+<hr/>Details Timeline<br/>
 <div id="timeline" style="width: 900px; height: 500px;"></div>
 <div id="data"></div>
 </body>
