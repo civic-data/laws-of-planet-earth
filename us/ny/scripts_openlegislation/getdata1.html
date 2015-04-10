@@ -95,6 +95,7 @@ function(result){
     }
     //console.log(result); 
     if ( result['response']['results'].length <= 0 ){
+        $("#message").text("");
         return;
     }
 
