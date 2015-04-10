@@ -29,7 +29,8 @@ var map1 = {};
 var queue = [];
 var pending = null;
 var max = 700;
-var pagesize = 100;
+//var pagesize = 100;
+var pagesize = 10;
 //var pagesize = 5;
 //var max = 100;
 //var max = 2;
@@ -202,7 +203,8 @@ for(i=1; i< max; i+=pagesize){
 //console.log(input);
 
 //console.log(typeof i + ' ' + typeof pagesize);
-queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(i)+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?'});
+
+queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(i)+'&sort=modified&sortOrder=true&term='+escape(input + " -otype:transcript")+'&callback=?'});
 
 // queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?'});
 
