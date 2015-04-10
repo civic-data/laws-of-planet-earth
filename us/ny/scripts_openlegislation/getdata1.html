@@ -27,11 +27,12 @@ var rows = [];
 var rowssummary = [];
 var map1 = {};
 var queue = [];
+var global_input = '"message of necessity"';
 var pending = null;
 var max = 700;
 //var pagesize = 100;
 var pagesize = 10;
-//var pagesize = 5;
+//var pagesize = 1;
 //var max = 100;
 //var max = 2;
 
@@ -80,6 +81,13 @@ function addData(str, dateint1){
         drawChart();
 }
 
+var closure1_firsttime  =
+function(result){
+    total_on_server = parseInt(result['response']['metadata']['totalresults']);
+    max = total_on_server;
+    getdata(global_input,max);
+}
+
 var closure1  =
 function(result){
     //console.log(JSON.stringify(result).length);
@@ -90,7 +98,7 @@ function(result){
         var url = item.url;
         //$("#message").text(url);
         //$("#message").text("(" + item.count + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " + url);
-        $("#message").text("(" + (item.count+1) + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
+        $("#message").text("(" + (item.count) + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
         pending = $.getJSON(url, closure1);
     }
     //console.log(result); 
@@ -179,47 +187,53 @@ function(result){
     }
 }
 
-function getdata(input){
+function getdata_firsttime(input){
+global_input=input;
 if (pending != null) {
 pending.abort();
 pending=null;
 }
 queue=[];
-
 window.location.hash='#'+escape(input);
-
 $("#search").val(input);
-
 $("#data").html('');
 $("#timelinesummary").html('');
 $("#timeline").html('');
 rows = [];
 map1 = {};
 total_on_server= 0;
+// set up queue
+url = '///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + " -otype:transcript")+'&callback=?';
 
-//for(i=1; i< 1000; i++){
-//for(i=1; i< 100; i++){
-for(i=1; i< max; i+=pagesize){
-//for(i=1; i< 40; i++){
-//console.log(input);
-
-//console.log(typeof i + ' ' + typeof pagesize);
-
-queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(i)+'&sort=modified&sortOrder=true&term='+escape(input + " -otype:transcript")+'&callback=?'});
-
-// queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?'});
-
-//queue.unshift( '///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?');
+$("#message").text("initial request");
+pending = $.getJSON(url, closure1_firsttime);
 }
 
+function getdata(input, max){
+if (pending != null) { pending.abort(); pending=null; }
+queue=[];
+window.location.hash='#'+escape(input);
+$("#search").val(input);
+$("#data").html('');
+$("#timelinesummary").html('');
+$("#timeline").html('');
+rows = [];
+map1 = {};
+total_on_server= 0;
+// set up queue
+for(i=1; i< max; i+=pagesize){
+queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(((i-1)/pagesize)+1)+'&sort=modified&sortOrder=true&term='+escape(input + " -otype:transcript")+'&callback=?'});
+}
 if (queue.length > 0){
-    //$.getJSON(queue.pop(), closure1);
     var item = queue.shift();
     var url = item.url;
-    $("#message").text("(" + (item.count+1) + " of "+ max + ") reading " );
+    if (queue.length > 1){
+        $("#message").text("(" + (item.count+1) + " of "+ max + ") reading " );
+    } else {
+        $("#message").text("" );
+    }
     pending = $.getJSON(url, closure1);
 }
-
 }
 
 $( document ).ready(function() {
@@ -230,7 +244,7 @@ if(window.location.hash.length > 1){
     //$("#search").val(input);
 }
 //getdata('"message of necessity"');
-getdata(input);
+getdata_firsttime(input);
 });
 
 function log(s){
@@ -295,7 +309,7 @@ $("#data").append(s + '<br/>');
 </script>
 </head>
 <body>
-Search: <input id="search" onchange="getdata(this.value);" /><br/><br/>
+Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
 <div id="message"></div>
 <hr/>Number of References Timeline<br/>
