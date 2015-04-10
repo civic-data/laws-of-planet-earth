@@ -29,6 +29,8 @@ var map1 = {};
 var queue = [];
 var pending = null;
 var max = 700;
+var pagesize = 100;
+//var pagesize = 5;
 //var max = 100;
 //var max = 2;
 
@@ -90,7 +92,7 @@ function(result){
         $("#message").text("(" + (item.count+1) + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
         pending = $.getJSON(url, closure1);
     }
-    
+    //console.log(result); 
     if ( result['response']['results'].length <= 0 ){
         return;
     }
@@ -111,66 +113,68 @@ function(result){
     //console.log(result['response']['results'][0]['otype']);
     //console.log(result);
 
-    if (result['response']['results'][0]['otype'] == "bill"){
-        //console.log(result['response']['results'][0]['data']['bill']['actions'][0]['date'])
-        var dateint1 = parseInt(result['response']['results'][0]['data']['bill']['actions'][0]['date']);
+    for(jj=0; jj < result['response']['results'].length ; jj++ ){
+    if (result['response']['results'][jj]['otype'] == "bill"){
+        //console.log(result['response']['results'][jj]['data']['bill']['actions'][0]['date'])
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['bill']['actions'][0]['date']);
 
         log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
-        addData( result['response']['results'][0]['oid'], dateint1);
+        addData( result['response']['results'][jj]['oid'], dateint1);
 
-        log('<div class="highlight1"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        log('<div class="highlight1"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
         log("<b>length: </b> "+ result['response']['results'].length + "</b>");
-        //console.log(result['response']['results'][0]['data']['bill']['title'])
-        log("<b>title:</b> " + result['response']['results'][0]['data']['bill']['title']);
-        log("<b>sponsor:</b> " + result['response']['results'][0]['data']['bill']['sponsor']['fullname']);
+        //console.log(result['response']['results'][jj]['data']['bill']['title'])
+        log("<b>title:</b> " + result['response']['results'][jj]['data']['bill']['title']);
+        log("<b>sponsor:</b> " + result['response']['results'][jj]['data']['bill']['sponsor']['fullname']);
     }
-    // result['response']['results'][0]['otype']
-    else if (result['response']['results'][0]['otype'] == "action"){
-        var dateint1 = parseInt(result['response']['results'][0]['data']['action']['date']);
+    // result['response']['results'][jj]['otype']
+    else if (result['response']['results'][jj]['otype'] == "action"){
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['action']['date']);
         //drawchart here
         log('<hr/><b><div class="highlight2">'+ new Date(dateint1)+ "</div></b>");
-        addData( result['response']['results'][0]['oid'], dateint1);
-        log('<div class="highlight2"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        addData( result['response']['results'][jj]['oid'], dateint1);
+        log('<div class="highlight2"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
-    else if (result['response']['results'][0]['otype'] == "transcript"){
-        var dateint1 = parseInt(result['response']['results'][0]['data']['transcript']['timeStamp']);
+    else if (result['response']['results'][jj]['otype'] == "transcript"){
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['transcript']['timeStamp']);
         log('<hr/><b><div class="highlight3">'+ new Date(dateint1)+ "</div></b>");
-        //log('<hr/><b><div class="highlight3">'+ result['response']['results'][0]['otype'] + "</div></b>");
+        //log('<hr/><b><div class="highlight3">'+ result['response']['results'][jj]['otype'] + "</div></b>");
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
-        log('<div class="highlight3"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        log('<div class="highlight3"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
         //drawchart here
-        addData( result['response']['results'][0]['oid'], dateint1);
+        addData( result['response']['results'][jj]['oid'], dateint1);
     }
-    else if (result['response']['results'][0]['otype'] == "meeting"){
-        var dateint1 = parseInt(result['response']['results'][0]['data']['meeting']['meetingDateTime']);
+    else if (result['response']['results'][jj]['otype'] == "meeting"){
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['meeting']['meetingDateTime']);
         log('<hr/><b><div class="highlight4">'+ new Date(dateint1)+ "</div></b>");
-        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][0]['otype'] + "</div></b>");
+        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][jj]['otype'] + "</div></b>");
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
-        log('<div class="highlight4"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        log('<div class="highlight4"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
         //drawchart here
-        addData( result['response']['results'][0]['oid'], dateint1);
+        addData( result['response']['results'][jj]['oid'], dateint1);
     }
-    else if (result['response']['results'][0]['otype'] == "vote"){
+    else if (result['response']['results'][jj]['otype'] == "vote"){
         //console.log(result);
-        var dateint1 = parseInt(result['response']['results'][0]['data']['vote']['voteDate']);
-        var ayes = (result['response']['results'][0]['data']['vote']['ayes']).length;
-        var nays = (result['response']['results'][0]['data']['vote']['nays']).length;
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['vote']['voteDate']);
+        var ayes = (result['response']['results'][jj]['data']['vote']['ayes']).length;
+        var nays = (result['response']['results'][jj]['data']['vote']['nays']).length;
         log('<hr/><b><div class="highlight5">'+ new Date(dateint1)+ "</div></b>");
-        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][0]['otype'] + "</div></b>");
+        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][jj]['otype'] + "</div></b>");
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
-        log('<div class="highlight5"><b>type:</b> ' + result['response']['results'][0]['otype'] + '</div>');
+        log('<div class="highlight5"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
         log('<b><div class="highlight9"> ayes: '+ ayes + ' nays: ' + nays + '</div></b>');
         //drawchart here
-        addData( result['response']['results'][0]['oid'], dateint1);
+        addData( result['response']['results'][jj]['oid'], dateint1);
     }
     else {
-        log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][0]['otype'] + "</div></b>");
+        log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][jj]['otype'] + "</div></b>");
         //console.log(result);
         //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
     }
-    log("<b>id:</b> "+ result['response']['results'][0]['oid']);
-    log('<b>url:</b> <a href="' + result['response']['results'][0]['url'] + '">' + result['response']['results'][0]['url'] + '</a>');
+    log("<b>id:</b> "+ result['response']['results'][jj]['oid']);
+    log('<b>url:</b> <a href="' + result['response']['results'][jj]['url'] + '">' + result['response']['results'][jj]['url'] + '</a>');
+    }
 }
 
 function getdata(input){
@@ -193,10 +197,15 @@ total_on_server= 0;
 
 //for(i=1; i< 1000; i++){
 //for(i=1; i< 100; i++){
-for(i=1; i< max; i++){
+for(i=1; i< max; i+=pagesize){
 //for(i=1; i< 40; i++){
 //console.log(input);
-queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?'});
+
+//console.log(typeof i + ' ' + typeof pagesize);
+queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(i)+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?'});
+
+// queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?'});
+
 //queue.unshift( '///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx='+i+'&sort=modified&sortOrder=true&term='+escape(input)+'&callback=?');
 }
 
