@@ -98,7 +98,11 @@ function(result){
         var url = item.url;
         //$("#message").text(url);
         //$("#message").text("(" + item.count + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " + url);
-        $("#message").text("(" + (item.count) + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
+        if (queue.length > 1){
+            $("#message").text("(" + (item.count) + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
+        } else {
+            $("#message").text("" );
+        }
         pending = $.getJSON(url, closure1);
     }
     //console.log(result); 
