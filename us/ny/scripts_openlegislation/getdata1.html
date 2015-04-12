@@ -208,7 +208,7 @@ rows = [];
 map1 = {};
 total_on_server= 0;
 // set up queue
-url = '///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)+'&callback=?';
+url = '//open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)+'&callback=?';
 
 $("#message").text("initial request");
 pending = $.getJSON(url, closure1_firsttime);
@@ -227,7 +227,7 @@ map1 = {};
 total_on_server= 0;
 // set up queue
 for(i=1; i< max; i+=pagesize){
-queue.push( {count:i,url:'///open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(((i-1)/pagesize)+1)+'&sort=modified&sortOrder=true&term='+escape(input + search_extra)+'&callback=?'});
+queue.push( {count:i,url:'//open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(((i-1)/pagesize)+1)+'&sort=modified&sortOrder=true&term='+escape(input + search_extra)+'&callback=?'});
 }
 if (queue.length > 0){
     var item = queue.shift();
