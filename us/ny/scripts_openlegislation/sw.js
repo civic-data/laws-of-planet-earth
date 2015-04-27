@@ -19,6 +19,10 @@ self.addEventListener('fetch', function(event) {
 
 	// Clone the request for fetch and cache
 	// A request is a stream and can be consumed only once.
+
+    console.log('QQQ:event.request:');
+    console.log(event.request.url);
+
 	var fetchRequest = event.request.clone(),
 		cacheRequest = event.request.clone();
 
