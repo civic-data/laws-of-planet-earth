@@ -7,6 +7,7 @@
 body{
 font: 16px Arial, sans-serif;
 }
+#messagecache { font-size: 14pt; background-color:#e0e0e0;}
 #message { font-size: 14pt; background-color:#e0e0e0;}
 #search { font-size: 20pt;}
 .highlight0 { background-color: #ff0000; font-size: 20pt;}
@@ -231,7 +232,8 @@ pending = $.getJSON(url, closure1_firsttime);
 
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra))+'&callback=?';
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra));
-var urlcache= 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=30&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)
+//var urlcache= 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=30&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)
+var urlcache= 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)
 
 /*
 self.addEventListener('fetch', function(event) {
@@ -261,6 +263,7 @@ console.log('startSpinner');
 startSpinner();
 
 // fetch fresh data
+        $('#messagecache').html( '<b><font color="blue">'+new Date() + ' SEND REQUEST to network</font></b>');
 var networkUpdate = fetch(urlcache).then(function(response) {
 return response.json();
 }).then(function(data) {
@@ -268,18 +271,25 @@ networkDataReceived = true;
 console.log(new Date()+ " fetch FRESH data: " + data);
 console.log(data);
 updatePage(data);
+        $('#messagecache').html( '<b><font color="blue">'+new Date() + ' from network</font></b>');
 });
 
 // fetch cached data
+        $('#messagecache').html( '<b><font color="green">'+new Date() + ' SEND REQUEST to cache</font></b>');
+        console.log('CACHE CHECK');
+
 caches.match(urlcache).then(function(response) {
+        console.log('CACHE CHECK response: ' , response);
 if (!response) throw Error("No data");
 return response.json();
 }).then(function(data) {
 // don't overwrite newer network data
-console.log('TEST network received: ' + networkDataReceived);
+console.log('CACHE TEST network received: ' + networkDataReceived);
+        $('#messagecache').html( '<b><font color="green">'+new Date() + ' CACHE TEST network received: ' + networkDataReceived + '</font></b>');
 if (!networkDataReceived) {
 console.log(new Date()+ " SHOW CACHED DATA: " + data);
 updatePage(data);
+        $('#messagecache').html( '<b><font color="green">'+new Date() + ' from cache</font></b>');
 }
 }).catch(function() {
 // we didn't get cached data, the network is our last hope:
@@ -293,8 +303,8 @@ console.log('updatePage: ' );
 console.log(data);
 //console.log('xxx: ' +JSON.stringify(data));
         document.getElementById('data1').InnerHTML = new Date() + ' data: ' + JSON.stringify(data) + '';
-        console.log('QQQ:');
-        console.log(document.getElementById('data1'));
+        //console.log('QQQ:');
+        //console.log(document.getElementById('data1'));
         $('#data1').html( new Date() + ' data: ' + JSON.stringify(data) + '') ;
 }
 
@@ -424,6 +434,7 @@ if ('serviceWorker' in navigator) {
 Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
 <div style="display:none" id="data1"></div>
+<div id="messagecache"></div>
 <div id="message"></div>
 <div id="spinner"></div>
 <hr/>Number of References Timeline<br/>
