@@ -229,7 +229,7 @@ pending = $.getJSON(url, closure1_firsttime);
 
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra))+'&callback=?';
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra));
-var urlcache= 'http://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term=%22message%20of%20necessity%22%20-otype:transcript'
+var urlcache= 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term=%22message%20of%20necessity%22%20-otype:transcript'
 
 caches.open('mysite-dynamic').then(function(cache) {
 return fetch(urlcache).then(function(response) {
