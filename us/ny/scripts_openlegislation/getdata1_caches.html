@@ -86,6 +86,8 @@ var closure1_firsttime  =
 function(result){
     total_on_server = parseInt(result['response']['metadata']['totalresults']);
     max = total_on_server;
+    // debug
+    max = 2;
     getdata(global_input,max);
 }
 
@@ -229,21 +231,80 @@ pending = $.getJSON(url, closure1_firsttime);
 
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra))+'&callback=?';
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra));
-var urlcache= 'http://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term=%22message%20of%20necessity%22%20-otype:transcript'
+var urlcache= 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)
 
+/*
 self.addEventListener('fetch', function(event) {
+console.log(event);
   // If a match isn't found in the cache, the response
   // will look like a connection error
       event.respondWith(caches.match(event.request));
 });
-
+*/
+/*
+caches.match("http://localhost:8000/x").then(function (x){console.log(x)})
+*/
+/*
 caches.open('mysite-dynamic').then(function(cache) {
 return fetch(urlcache).then(function(response) {
-console.log('put to cache.');
+console.log('====='+ new Date() + ' put to cache. key: ' + urlcache);
 cache.put(urlcache, response.clone());
+cache.put('x', response.clone());
 console.log('...done put to cache.');
 //return response.json();
 });})
+*/
+
+var networkDataReceived = false;
+
+console.log('startSpinner');
+startSpinner();
+
+// fetch fresh data
+var networkUpdate = fetch(urlcache).then(function(response) {
+return response.json();
+}).then(function(data) {
+networkDataReceived = true;
+console.log(new Date()+ " fetch fresh data: " + data);
+console.log(data);
+updatePage(data);
+});
+
+// fetch cached data
+caches.match(urlcache).then(function(response) {
+if (!response) throw Error("No data");
+return response.json();
+}).then(function(data) {
+// don't overwrite newer network data
+if (!networkDataReceived) {
+updatePage(data);
+}
+}).catch(function() {
+// we didn't get cached data, the network is our last hope:
+return networkUpdate;
+}).catch(showErrorMessage).then(stopSpinner);
+
+}
+
+function updatePage(data){
+console.log('updatePage: ' );
+console.log(data);
+console.log('xxx: ' +JSON.stringify(data));
+        document.getElementById('data1').InnerHTML = new Date() + ' data: XXX' + JSON.stringify(data) + 'XXX';
+        console.log('QQQ:');
+        console.log(document.getElementById('data1'));
+        $('#data1').html( new Date() + ' data: ' + JSON.stringify(data) + '') ;
+}
+
+function showErrorMessage(){
+        document.getElementById('message').InnerHTML = '<b><font color="red">Issue</font></b>';
+}
+
+function startSpinner(){
+        document.getElementById('spinner').InnerHTML = '<image src="spinner.gif"/>';
+}
+function stopSpinner(){
+        document.getElementById('spinner').InnerHTML = '';
 }
 
 function getdata(input, max){
@@ -343,12 +404,23 @@ $("#data").append(s + '<br/>');
         chart.draw(dataTable);
       }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw-caches.js', {
+    //scope: '/my-app/'
+  }).then(function(reg) {
+    console.log('Yey!', reg);
+  }).catch(function(err) {
+    console.log('Boo!', err);
+  });
+}
 </script>
 </head>
 <body>
 Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
+<div id="data1"></div>
 <div id="message"></div>
+<div id="spinner"></div>
 <hr/>Number of References Timeline<br/>
 <div id="timelinesummary" style="width: 900px; height: 200px;"></div>
 <hr/>Details Timeline<br/>
