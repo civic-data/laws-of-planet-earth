@@ -231,7 +231,7 @@ pending = $.getJSON(url, closure1_firsttime);
 
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra))+'&callback=?';
 //var urlcache= 'http://whateverorigin.org/get?url=' + encodeURIComponent('http://open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra));
-var urlcache= 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)
+var urlcache= 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.json?pageSize=30&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)
 
 /*
 self.addEventListener('fetch', function(event) {
@@ -265,7 +265,7 @@ var networkUpdate = fetch(urlcache).then(function(response) {
 return response.json();
 }).then(function(data) {
 networkDataReceived = true;
-console.log(new Date()+ " fetch fresh data: " + data);
+console.log(new Date()+ " fetch FRESH data: " + data);
 console.log(data);
 updatePage(data);
 });
@@ -276,7 +276,9 @@ if (!response) throw Error("No data");
 return response.json();
 }).then(function(data) {
 // don't overwrite newer network data
+console.log('TEST network received: ' + networkDataReceived);
 if (!networkDataReceived) {
+console.log(new Date()+ " SHOW CACHED DATA: " + data);
 updatePage(data);
 }
 }).catch(function() {
@@ -289,22 +291,25 @@ return networkUpdate;
 function updatePage(data){
 console.log('updatePage: ' );
 console.log(data);
-console.log('xxx: ' +JSON.stringify(data));
-        document.getElementById('data1').InnerHTML = new Date() + ' data: XXX' + JSON.stringify(data) + 'XXX';
+//console.log('xxx: ' +JSON.stringify(data));
+        document.getElementById('data1').InnerHTML = new Date() + ' data: ' + JSON.stringify(data) + '';
         console.log('QQQ:');
         console.log(document.getElementById('data1'));
         $('#data1').html( new Date() + ' data: ' + JSON.stringify(data) + '') ;
 }
 
 function showErrorMessage(){
-        document.getElementById('message').InnerHTML = '<b><font color="red">Issue</font></b>';
+        //document.getElementById('message').InnerHTML = '<b><font color="red">Issue</font></b>';
+        $('#message').html( '<b><font color="red">Issue</font></b>');
 }
 
 function startSpinner(){
-        document.getElementById('spinner').InnerHTML = '<image src="spinner.gif"/>';
+        //document.getElementById('spinner').InnerHTML = '<image src="spinner.gif"/>';
+        $('#spinner').html( '<image src="spinner.gif"/>');
 }
 function stopSpinner(){
-        document.getElementById('spinner').InnerHTML = '';
+        //document.getElementById('spinner').InnerHTML = '';
+        $('#spinner').html( '');
 }
 
 function getdata(input, max){
@@ -418,7 +423,7 @@ if ('serviceWorker' in navigator) {
 <body>
 Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
-<div id="data1"></div>
+<div style="display:none" id="data1"></div>
 <div id="message"></div>
 <div id="spinner"></div>
 <hr/>Number of References Timeline<br/>
