@@ -264,39 +264,38 @@ console.log('startSpinner');
 startSpinner();
 
 // fetch fresh data
-        $('#messagecache').html( '<b><font color="blue">'+new Date() + ' SEND REQUEST to network</font></b>');
+$('#messagecache').html('<b><font color="blue">' + new Date() + ' SEND REQUEST to network</font></b>');
 var networkUpdate = fetch(urlcache).then(function(response) {
-return response.json();
+    return response.json();
 }).then(function(data) {
-networkDataReceived = true;
-console.log(new Date()+ " fetch FRESH data: " + data);
-console.log(data);
-updatePage(data);
-        $('#messagecache').html( '<b><font color="blue">'+new Date() + ' from network</font></b>');
+    networkDataReceived = true;
+    console.log(new Date() + " fetch FRESH data: " + data);
+    console.log(data);
+    updatePage(data);
+    $('#messagecache').html('<b><font color="blue">' + new Date() + ' from network</font></b>');
 });
 
 // fetch cached data
-        $('#messagecache').html( '<b><font color="green">'+new Date() + ' SEND REQUEST to cache</font></b>');
-        console.log('CACHE CHECK');
+$('#messagecache').html('<b><font color="green">' + new Date() + ' SEND REQUEST to cache</font></b>');
+console.log('CACHE CHECK');
 
 caches.match(urlcache).then(function(response) {
-        console.log('CACHE CHECK response: ' , response);
-if (!response) throw Error("No data");
-return response.json();
+    console.log('CACHE CHECK response: ', response);
+    if (!response) throw Error("No data");
+    return response.json();
 }).then(function(data) {
-// don't overwrite newer network data
-console.log('CACHE TEST network received: ' + networkDataReceived);
-        $('#messagecache').html( '<b><font color="green">'+new Date() + ' CACHE TEST network received: ' + networkDataReceived + '</font></b>');
-if (!networkDataReceived) {
-console.log(new Date()+ " SHOW CACHED DATA: " + data);
-updatePage(data);
-        $('#messagecache').html( '<b><font color="green">'+new Date() + ' from cache</font></b>');
-}
+    // don't overwrite newer network data
+    console.log('CACHE TEST network received: ' + networkDataReceived);
+    $('#messagecache').html('<b><font color="green">' + new Date() + ' CACHE TEST network received: ' + networkDataReceived + '</font></b>');
+    if (!networkDataReceived) {
+        console.log(new Date() + " SHOW CACHED DATA: " + data);
+        updatePage(data);
+        $('#messagecache').html('<b><font color="green">' + new Date() + ' from cache</font></b>');
+    }
 }).catch(function() {
-// we didn't get cached data, the network is our last hope:
-return networkUpdate;
+    // we didn't get cached data, the network is our last hope:
+    return networkUpdate;
 }).catch(showErrorMessage).then(stopSpinner);
-
 }
 
 function updatePage(data){

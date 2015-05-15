@@ -19,6 +19,9 @@ self.addEventListener('install', function(event) {
     console.log('QQQ:CACHE:');
     console.log(cache);
     cache.add('/getdata1_caches.html');
+    cache.add('/spinner.gif');
+    //cache.add('https://code.jquery.com/jquery-2.1.3.min.js');
+    //cache.add('https://ajax.googleapis.com/ajax/static/modules/gviz/1.1/core/tooltip.css');
     /*
       return cache.addAll([
         //'/',
