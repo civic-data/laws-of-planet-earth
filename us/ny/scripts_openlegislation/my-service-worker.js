@@ -1,3 +1,4 @@
+//globalOptions.debug=true;
 importScripts('bower_components/sw-toolbox/sw-toolbox.js'); 
 
 // Set up routes from URL patterns to request handlers
