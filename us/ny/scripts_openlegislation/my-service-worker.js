@@ -25,4 +25,5 @@ toolbox.router.get('/(.*)', toolbox.fastest, {origin: 'https://origin-proxy.apps
 //toolbox.router.default = myDefaultRequestHandler;
 
 // You can provide a list of resources which will be cached at service worker install time
-toolbox.precache(['/getdata1_swtoolkit.html']);
+//toolbox.precache(['/getdata1_swtoolkit.html']);
+toolbox.precache(['/laws-of-planet-earth/us/ny/scripts_openlegislation/getdata1_swtoolkit.html']);
