@@ -5,7 +5,9 @@ importScripts('bower_components/sw-toolbox/sw-toolbox.js');
 //toolbox.router.get('/myapp/index.html', someHandler);
 
 // For some common cases Service Worker Toolbox provides a built-in handler
-toolbox.router.get('/(.*)', toolbox.networkFirst, {origin: 'http://open.senate.gov'});
+//toolbox.router.get('/(.*)', toolbox.networkFirst, {origin: 'http://open.senate.gov'});
+toolbox.router.get('/(.*)', toolbox.fastest, {origin: 'http://open.senate.gov'});
+toolbox.router.get('/(.*)', toolbox.fastest, {origin: 'https://origin-proxy.appspot.com'});
 //toolbox.router.get('/', toolbox.networkFirst);
 
 // URL patterns are the same syntax as ExpressJS routes
