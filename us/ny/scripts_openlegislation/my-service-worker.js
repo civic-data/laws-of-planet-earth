@@ -26,4 +26,7 @@ toolbox.router.get('/', toolbox.networkFirst);
 
 // You can provide a list of resources which will be cached at service worker install time
 //toolbox.precache(['/getdata1_swtoolkit.html']);
-toolbox.precache(['/laws-of-planet-earth/us/ny/scripts_openlegislation/getdata1_swtoolkit.html']);
+toolbox.precache([
+'/laws-of-planet-earth/us/ny/scripts_openlegislation/getdata1_swtoolkit.html',
+'/laws-of-planet-earth/us/ny/scripts_openlegislation/bower_components/sw-toolbox/companion.js'
+]);
