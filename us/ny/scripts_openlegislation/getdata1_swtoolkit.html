@@ -32,6 +32,9 @@ var queue = [];
 var global_input = '"message of necessity"';
 var pending = null;
 var max = 700;
+
+var REALMAX = 400;
+
 //var pagesize = 100;
 //var pagesize = 10;
 var pagesize = 1;
@@ -89,7 +92,7 @@ console.log('QQQ: closure1_firsttime:');
 console.log(result);
     total_on_server = parseInt(result['response']['metadata']['totalresults']);
     //max = total_on_server;
-    max = Math.min(total_on_server,10);
+    max = Math.min(total_on_server,REALMAX);
     getdata(global_input,max);
 }
 
