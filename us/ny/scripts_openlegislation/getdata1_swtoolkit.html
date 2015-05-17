@@ -85,6 +85,8 @@ function addData(str, dateint1){
 
 var closure1_firsttime  =
 function(result){
+console.log('QQQ: closure1_firsttime:');
+console.log(result);
     total_on_server = parseInt(result['response']['metadata']['totalresults']);
     max = total_on_server;
     getdata(global_input,max);
@@ -92,6 +94,8 @@ function(result){
 
 var closure1  =
 function(result){
+console.log('QQQ: closure1:');
+console.log(result);
     //console.log(JSON.stringify(result).length);
     //console.log(result['response']);
     //console.log( result['response']['results'].length );
