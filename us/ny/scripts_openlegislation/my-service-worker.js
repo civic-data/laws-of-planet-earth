@@ -9,6 +9,7 @@ importScripts('bower_components/sw-toolbox/sw-toolbox.js');
 //toolbox.router.get('/(.*)', toolbox.fastest, {origin: 'http://open.senate.gov'});
 //toolbox.router.get('/(.*)', toolbox.fastest, {origin: 'https://origin-proxy.appspot.com'});
 toolbox.router.get('/(.*)', toolbox.cacheFirst, {origin: 'https://www.google.com'});
+toolbox.router.get('/(.*)', toolbox.cacheFirst, {origin: 'https://ajax.googleapis.com'});
 toolbox.router.get('/(.*)', toolbox.cacheFirst, {origin: 'https://code.jquery.com'});
 //https://code.jquery.com/jquery-2.1.3.min.js
 toolbox.router.get('/(.*)', toolbox.cacheFirst, {origin: 'https://origin-proxy.appspot.com'});
