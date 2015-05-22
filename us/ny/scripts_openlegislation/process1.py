@@ -26,7 +26,7 @@ jsonstring=json.load(sys.stdin)
 #print jsonstring
 csvwriter = csv.writer(sys.stdout)
 #csvwriter.writerow(['oid','otype','date','gmtime','data','senateBillNo'])
-#csvwriter.writerow(['oid','otype','date','gmtime','data','senateBillNo',uniBill','law','sponsor','active','votes'])
+#csvwriter.writerow(['oid','otype','date','gmtime','data','senateBillNo',uniBill','law','sponsor','active','votes','sameAs'])
 # print len(jsonstring['response']['results'])
 for dict1 in jsonstring['response']['results']:
     #print type(dict1)
@@ -44,6 +44,8 @@ for dict1 in jsonstring['response']['results']:
     sponsor = None
     active = None
     votes = None
+    sameAs = None
+
     if dict1['otype'] == 'bill':
         #print "actions",len(dict1['data']['bill']['actions'])
         data = str(dict1['data']['bill']['actions'])
@@ -71,6 +73,10 @@ for dict1 in jsonstring['response']['results']:
             votes = str(dict1['data']['bill']['votes'])
         except:
             votes = ""
+        try:
+            sameAs = str(dict1['data']['bill']['sameAs'])
+        except:
+            sameAs = ""
 
         date=time.strftime("%x %X",time.gmtime(float(dict1['data']['bill']['actions'][0]['date'])/1000))
         #pass
@@ -85,7 +91,7 @@ for dict1 in jsonstring['response']['results']:
         #print '@@@@@@@@@@@@@other', dict1['otype']
         print ('@@@@@@@@@@@@@other', dict1['otype'])
         pass
-    csvwriter.writerow([oid,otype,date,gmtime,data,senateBillNo,uniBill,law,sponsor,active,votes])
+    csvwriter.writerow([oid,otype,date,gmtime,data,senateBillNo,uniBill,law,sponsor,active,votes,sameAs])
 
     #print "====",dict1['data']
     #for item in dict1:
