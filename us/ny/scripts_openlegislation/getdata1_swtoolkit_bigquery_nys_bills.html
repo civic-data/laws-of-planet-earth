@@ -98,7 +98,11 @@ for(item in result){
         //console.log(
         //$("#message").text( result[item].f[1].v);
         //console.log(parseFloat(result[item].f[0].v));
-        addData( result[item].f[1].v + ' ' + result[item].f[2].v, parseInt(parseFloat(result[item].f[0].v))*1000);
+        var dateint1 = parseInt(parseFloat(result[item].f[0].v))*1000;
+        var title = result[item].f[1].v + ' ' + result[item].f[2].v;
+        addData( title, dateint1);
+        log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
+        log("<b>title:</b> " + title);
 }
         drawChart();
 
