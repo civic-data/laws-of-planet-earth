@@ -19,7 +19,7 @@ for row in csvreader:
     except:
         date = datetime.datetime.strptime( row['date'], "%m/%d/%y %H:%M:%S" )
     #print time.strftime('%Y-%m-%dT%H:%M:%SZ',row['date'])
-    rowout+=[row['date']]
+    rowout+=[date]
     for item in headers:
         rowout+=[row[item]]
     csvwriter.writerow(rowout)
