@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- <script src="///code.jquery.com/jquery-1.11.2.min.js" ></script> -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+font: 16px Arial, sans-serif;
+}
+#message { font-size: 14pt; background-color:#e0e0e0;}
+#search { font-size: 20pt;}
+.highlight0 { background-color: #ff0000; font-size: 20pt;}
+.highlight1 { background-color: #ffff00; }
+.highlight2 { background-color: #80ff00; }
+.highlight3 { background-color: #ff8000; }
+.highlight4 { background-color: #ff8080; }
+.highlight5 { background-color: #808080; }
+
+.highlight9 { background-color: #ff0000; }
+</style>
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js" ></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['timeline']}]}"></script>
+<script src="bower_components/sw-toolbox/companion.js" data-service-worker="my-service-worker.js"></script>
+<script>
+var search_extra = " -otype:transcript";
+var total_on_server= 0;
+var rows = [];
+var rowssummary = [];
+var map1 = {};
+var queue = [];
+var global_input = '2015';
+var pending = null;
+var max = 700;
+
+var REALMAX = 400;
+
+//var pagesize = 100;
+//var pagesize = 10;
+var pagesize = 1;
+//var max = 100;
+//var max = 2;
+
+
+
+function addData(str, dateint1){
+
+/*
+//console.log(typeof dateint1);
+        //var key = dateint1;
+        var key = new Date(dateint1).toLocaleDateString();
+        if (key in map1){
+            map1[key].count++;
+        } else {
+            map1[key]={count:1,val:dateint1};
+        }
+        rowssummary = [];
+
+        for (key in map1){
+        //console.log(key + " " + typeof key);
+        var obj = map1[key];
+        //console.log(obj);
+
+            rowssummary.push([ obj.count.toString(),
+                //new Date(parseInt(key)),
+                new Date(obj.val),
+                //new Date(parseInt(key)+(1000*60*60*24))]
+                new Date(obj.val+(1000*60*60*24))]
+        );
+        }
+
+        //console.log(rowssummary);
+        //rowssummary.sort(function (a,b) { return a[0].localeCompare(b[0]);});
+
+        rowssummary.sort(function (a,b) { i=parseInt(a[0]); j=parseInt(b[0]); return (i > j) ? -1 : ((j > i) ? +1 : 0);});
+
+//return (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0);}
+
+        drawChartSummary();
+*/
+
+        //console.log(map1);
+        rows.push([ str,
+                new Date(dateint1),
+                new Date(dateint1+(1000*60*60*24))]
+        );
+        //google.setOnLoadCallback(drawChart);
+        //drawChart();
+}
+
+var closure1_firsttime  =
+function(result){
+//console.log('QQQ: closure1_firsttime:');
+//console.log(result);
+
+for(item in result){
+        //var dateint1 = parseInt(result['response']['results'][jj]['data']['bill']['actions'][0]['date']);
+        //console.log(
+        //$("#message").text( result[item].f[1].v);
+        //console.log(parseFloat(result[item].f[0].v));
+        addData( result[item].f[1].v + ' ' + result[item].f[2].v, parseInt(parseFloat(result[item].f[0].v))*1000);
+}
+        drawChart();
+
+        //log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
+        //addData( result['response']['results'][jj]['oid'], dateint1);
+
+    //total_on_server = parseInt(result['response']['metadata']['totalresults']);
+    //max = total_on_server;
+    //max = Math.min(total_on_server,REALMAX);
+
+    // DEBUG only get first time for testing
+    //getdata(global_input,max);
+}
+
+var closure1  =
+function(result){
+console.log('QQQ: closure1:');
+console.log(result);
+    //console.log(JSON.stringify(result).length);
+    //console.log(result['response']);
+    //console.log( result['response']['results'].length );
+    if (queue.length > 0){
+        var item = queue.shift();
+        var url = item.url;
+        //$("#message").text(url);
+        //$("#message").text("(" + item.count + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " + url);
+        if (queue.length > 1){
+            $("#message").text("(" + (item.count) + " of "+ max + ") reading " + JSON.stringify(result).length + " bytes " );
+        } else {
+            $("#message").text("" );
+        }
+        //pending = $.getJSON(url, closure1);
+        pending = $.ajax({ jsonpCallback: "callback1", dataType: "json", url: url, success: closure1, cache:true });
+    }
+    //console.log(result); 
+    if ( result['response']['results'].length <= 0 ){
+        $("#message").text("");
+        return;
+    }
+
+    //console.log( 'Continue...' );
+
+    if( total_on_server !== parseInt(result['response']['metadata']['totalresults'])){
+        total_on_server = parseInt(result['response']['metadata']['totalresults']);
+        log('<hr/><b><div class="highlight0">Rows: '+ total_on_server + "</div></b>");
+    }
+    total_on_server = parseInt(result['response']['metadata']['totalresults']);
+    //console.log(result['response']['metadata']);
+    //console.log(total_on_server);
+
+    //console.log('i: ' + i + ' total_on_server: ' + total_on_server);
+    //if ( i >= total_on_server){ return; }
+
+    //console.log(result['response']['results'][0]['otype']);
+    //console.log(result);
+
+    for(jj=0; jj < result['response']['results'].length ; jj++ ){
+    if (result['response']['results'][jj]['otype'] == "bill"){
+        //console.log(result['response']['results'][jj]['data']['bill']['actions'][0]['date'])
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['bill']['actions'][0]['date']);
+
+        log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
+        addData( result['response']['results'][jj]['oid'], dateint1);
+
+        log('<div class="highlight1"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
+        log("<b>length: </b> "+ result['response']['results'].length + "</b>");
+        //console.log(result['response']['results'][jj]['data']['bill']['title'])
+        log("<b>title:</b> " + result['response']['results'][jj]['data']['bill']['title']);
+        log("<b>sponsor:</b> " + result['response']['results'][jj]['data']['bill']['sponsor']['fullname']);
+    }
+    // result['response']['results'][jj]['otype']
+    else if (result['response']['results'][jj]['otype'] == "action"){
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['action']['date']);
+        //drawchart here
+        log('<hr/><b><div class="highlight2">'+ new Date(dateint1)+ "</div></b>");
+        addData( result['response']['results'][jj]['oid'], dateint1);
+        log('<div class="highlight2"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
+        //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
+    }
+    else if (result['response']['results'][jj]['otype'] == "transcript"){
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['transcript']['timeStamp']);
+        log('<hr/><b><div class="highlight3">'+ new Date(dateint1)+ "</div></b>");
+        //log('<hr/><b><div class="highlight3">'+ result['response']['results'][jj]['otype'] + "</div></b>");
+        //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
+        log('<div class="highlight3"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
+        //drawchart here
+        addData( result['response']['results'][jj]['oid'], dateint1);
+    }
+    else if (result['response']['results'][jj]['otype'] == "meeting"){
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['meeting']['meetingDateTime']);
+        log('<hr/><b><div class="highlight4">'+ new Date(dateint1)+ "</div></b>");
+        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][jj]['otype'] + "</div></b>");
+        //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
+        log('<div class="highlight4"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
+        //drawchart here
+        addData( result['response']['results'][jj]['oid'], dateint1);
+    }
+    else if (result['response']['results'][jj]['otype'] == "vote"){
+        //console.log(result);
+        var dateint1 = parseInt(result['response']['results'][jj]['data']['vote']['voteDate']);
+        var ayes = (result['response']['results'][jj]['data']['vote']['ayes']).length;
+        var nays = (result['response']['results'][jj]['data']['vote']['nays']).length;
+        log('<hr/><b><div class="highlight5">'+ new Date(dateint1)+ "</div></b>");
+        //log('<hr/><b><div class="highlight4">'+ result['response']['results'][jj]['otype'] + "</div></b>");
+        //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
+        log('<div class="highlight5"><b>type:</b> ' + result['response']['results'][jj]['otype'] + '</div>');
+        log('<b><div class="highlight9"> ayes: '+ ayes + ' nays: ' + nays + '</div></b>');
+        //drawchart here
+        addData( result['response']['results'][jj]['oid'], dateint1);
+    }
+    else {
+        log('<hr/><b><div class="highlight9"> UNKNOWN: '+ result['response']['results'][jj]['otype'] + "</div></b>");
+        //console.log(result);
+        //date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
+    }
+    log("<b>id:</b> "+ result['response']['results'][jj]['oid']);
+    log('<b>url:</b> <a href="' + result['response']['results'][jj]['url'] + '">' + result['response']['results'][jj]['url'] + '</a>');
+    }
+}
+
+function getdata_firsttime(input){
+global_input=input;
+if (pending != null) {
+pending.abort();
+pending=null;
+}
+queue=[];
+window.location.hash='#'+escape(input);
+$("#search").val(input);
+$("#data").html('');
+$("#timelinesummary").html('');
+$("#timeline").html('');
+rows = [];
+map1 = {};
+total_on_server= 0;
+// set up queue
+//url = 'http://open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)+'&callback=?';
+//url = 'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.jsonp?pageSize=1&pageIdx=1&sort=modified&sortOrder=true&term='+escape(input + search_extra)+'&callback=?';
+url = 'https://script.google.com/macros/s/AKfycbzm8onQ3rAGr_RWvCVhpihN8ZjNarD6VOIRVyiFFpaTg3wQSCOb/exec?type=nys-bills.jsonp&limit=10000&year=' + escape(input) + '&callback=?';
+
+
+$("#message").text("search: " + input);
+//pending = $.getJSON(url, closure1_firsttime);
+pending = $.ajax({ jsonpCallback: "callback1", dataType: "json", url: url, success: closure1_firsttime, cache:true });
+}
+
+function getdata(input, max){
+if (pending != null) { pending.abort(); pending=null; }
+queue=[];
+window.location.hash='#'+escape(input);
+$("#search").val(input);
+$("#data").html('');
+$("#timelinesummary").html('');
+$("#timeline").html('');
+rows = [];
+map1 = {};
+total_on_server= 0;
+// set up queue
+for(i=1; i< max; i+=pagesize){
+queue.push( {count:i,url:'https://origin-proxy.appspot.com/open.nysenate.gov/legislation/2.0/search.jsonp?pageSize='+pagesize+'&pageIdx='+(((i-1)/pagesize)+1)+'&sort=modified&sortOrder=true&term='+escape(input + search_extra)+'&callback=?'});
+}
+if (queue.length > 0){
+    var item = queue.shift();
+    var url = item.url;
+    if (queue.length > 1){
+        $("#message").text("(" + (item.count+1) + " of "+ max + ") reading " );
+    } else {
+        $("#message").text("" );
+    }
+    //pending = $.getJSON(url, closure1);
+    pending = $.ajax({ jsonpCallback: "callback1", dataType: "json", url: url, success: closure1, cache:true });
+}
+}
+
+$( document ).ready(function() {
+var input = global_input;
+if(window.location.hash.length > 1){
+    //console.log(unescape(window.location.hash.substring(1)));
+    input = unescape(window.location.hash.substring(1));
+    //$("#search").val(input);
+}
+//getdata('"message of necessity"');
+getdata_firsttime(input);
+});
+
+function log(s){
+//console.log(s)
+$("#data").append(s + '<br/>');
+}
+
+      function drawChartSummary() {
+        var container = document.getElementById('timelinesummary');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'Event' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        //console.log(rows);
+        dataTable.addRows( rowssummary);
+
+        var options = {
+            timeline: { singleColor: '#ff08d8' },
+        };
+        chart.draw(dataTable,options);
+      }
+
+      function drawChart() {
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'Event' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        //console.log(rows);
+        dataTable.addRows( rows);
+
+        var options = {
+            timeline: { singleColor: '#8d8' },
+        };
+        chart.draw(dataTable,options);
+      }
+
+
+      function drawChartTEST() {
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'President' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addRows(
+[
+          [ 'Washington', new Date(1789, 3, 29), new Date(1797, 2, 3) ],
+          [ 'Adams',      new Date(1797, 2, 3),  new Date(1801, 2, 3) ],
+          [ 'Jefferson',  new Date(1801, 2, 3),  new Date(1809, 2, 3) ]
+]
+);
+
+        chart.draw(dataTable);
+      }
+
+</script>
+</head>
+<body>
+Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
+<!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
+<div id="message"></div>
+<!--
+<hr/>Number of References Timeline<br/>
+<div id="timelinesummary" style="width: 900px; height: 200px;"></div>
+-->
+<hr/>Details Timeline<br/>
+<div id="timeline" style="width: 900px; height: 500px;"></div>
+<div id="data"></div>
+</body>
+</html>
