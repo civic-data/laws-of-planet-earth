@@ -92,6 +92,7 @@ var closure1_firsttime  =
 function(result){
 //console.log('QQQ: closure1_firsttime:');
 //console.log(result);
+//$('#spinner').html( '<image src="spinner.gif"/>');
 
 for(item in result){
         //var dateint1 = parseInt(result['response']['results'][jj]['data']['bill']['actions'][0]['date']);
@@ -104,6 +105,7 @@ for(item in result){
         log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
         log("<b>title:</b> " + title);
 }
+$('#spinner').html( '');
         drawChart();
 
         //log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
@@ -246,6 +248,7 @@ url = 'https://script.google.com/macros/s/AKfycbzm8onQ3rAGr_RWvCVhpihN8ZjNarD6VO
 
 $("#message").text("search: " + input);
 //pending = $.getJSON(url, closure1_firsttime);
+$('#spinner').html( '<image src="spinner.gif"/>');
 pending = $.ajax({ jsonpCallback: "callback1", dataType: "json", url: url, success: closure1_firsttime, cache:true });
 }
 
@@ -353,6 +356,7 @@ $("#data").append(s + '<br/>');
 Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
 <!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
 <div id="message"></div>
+<div id="spinner"><image src="spinner.gif"/</div>
 <!--
 <hr/>Number of References Timeline<br/>
 <div id="timelinesummary" style="width: 900px; height: 200px;"></div>
