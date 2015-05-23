@@ -79,11 +79,43 @@ for dict1 in jsonstring['response']['results']:
             sameAs = ""
 
         date=time.strftime("%x %X",time.gmtime(float(dict1['data']['bill']['actions'][0]['date'])/1000))
+        csvwriter.writerow([oid,otype,date,gmtime,data,senateBillNo,uniBill,law,sponsor,active,votes,sameAs])
         #pass
     elif dict1['otype'] == 'action':
         gmtime=float(dict1['data']['action']['date'])
         date=time.strftime("%x %X",time.gmtime(float(dict1['data']['action']['date'])/1000))
         data = str(dict1['data']['action'])
+        #print (dict1)
+        #sys.exit(1)
+        try:
+            senateBillNo = str(dict1['data']['action']['bill']['senateBillNo'])
+        except:
+            senateBillNo = ""
+        try:
+            uniBill = str(dict1['data']['action']['bill']['uniBill'])
+        except:
+            uniBill = ""
+        try:
+            law = str(dict1['data']['action']['bill']['law'])
+        except:
+            law = ""
+        try:
+            sponsor = str(dict1['data']['action']['bill']['sponsor'])
+        except:
+            sponsor = ""
+        try:
+            active = str(dict1['data']['action']['bill']['active'])
+        except:
+            active = ""
+        try:
+            votes = str(dict1['data']['action']['bill']['votes'])
+        except:
+            votes = ""
+        try:
+            sameAs = str(dict1['data']['action']['bill']['sameAs'])
+        except:
+            sameAs = ""
+        csvwriter.writerow([oid,otype,date,gmtime,data,senateBillNo,uniBill,law,sponsor,active,votes,sameAs])
     elif dict1['otype'] == 'transcript':
         data = str(dict1['data']['transcript']['transcriptText'])
         date=time.strftime("%x %X",time.gmtime(float(dict1['data']['transcript']['timeStamp'])/1000))
@@ -91,7 +123,6 @@ for dict1 in jsonstring['response']['results']:
         #print '@@@@@@@@@@@@@other', dict1['otype']
         print ('@@@@@@@@@@@@@other', dict1['otype'])
         pass
-    csvwriter.writerow([oid,otype,date,gmtime,data,senateBillNo,uniBill,law,sponsor,active,votes,sameAs])
 
     #print "====",dict1['data']
     #for item in dict1:
