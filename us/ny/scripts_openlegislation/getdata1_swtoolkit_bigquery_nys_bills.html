@@ -45,7 +45,7 @@ var pagesize = 1;
 
 function addData(str, dateint1){
 
-/*
+/**/
 //console.log(typeof dateint1);
         //var key = dateint1;
         var key = new Date(dateint1).toLocaleDateString();
@@ -76,8 +76,8 @@ function addData(str, dateint1){
 
 //return (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0);}
 
-        drawChartSummary();
-*/
+        //drawChartSummary();
+/**/
 
         //console.log(map1);
         rows.push([ str,
@@ -92,21 +92,26 @@ var closure1_firsttime  =
 function(result){
 //console.log('QQQ: closure1_firsttime:');
 //console.log(result);
-//$('#spinner').html( '<image src="spinner.gif"/>');
+//$('#spinner').html( '<img src="spinner.gif">');
 
 for(item in result){
         //var dateint1 = parseInt(result['response']['results'][jj]['data']['bill']['actions'][0]['date']);
-        //console.log(
+        //console.log( result[item].f[1].v);
         //$("#message").text( result[item].f[1].v);
         //console.log(parseFloat(result[item].f[0].v));
         var dateint1 = parseInt(parseFloat(result[item].f[0].v))*1000;
         var title = result[item].f[1].v + ' ' + result[item].f[2].v;
+        //console.log( 'add data...');
         addData( title, dateint1);
+        //console.log( 'DONE add data...');
         log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
         log("<b>title:</b> " + title);
 }
-$('#spinner').html( '');
+
+$("#timeline").css('height', '500px');
+        drawChartSummary();
         drawChart();
+$('#spinner').html( '');
 
         //log('<hr/><b><div class="highlight1">'+ new Date(dateint1)+ "</div></b>");
         //addData( result['response']['results'][jj]['oid'], dateint1);
@@ -121,8 +126,8 @@ $('#spinner').html( '');
 
 var closure1  =
 function(result){
-console.log('QQQ: closure1:');
-console.log(result);
+//console.log('QQQ: closure1:');
+//console.log(result);
     //console.log(JSON.stringify(result).length);
     //console.log(result['response']);
     //console.log( result['response']['results'].length );
@@ -248,7 +253,7 @@ url = 'https://script.google.com/macros/s/AKfycbzm8onQ3rAGr_RWvCVhpihN8ZjNarD6VO
 
 $("#message").text("search: " + input);
 //pending = $.getJSON(url, closure1_firsttime);
-$('#spinner').html( '<image src="spinner.gif"/>');
+$('#spinner').html( '<img src="spinner.gif">');
 pending = $.ajax({ jsonpCallback: "callback1", dataType: "json", url: url, success: closure1_firsttime, cache:true });
 }
 
@@ -281,6 +286,14 @@ if (queue.length > 0){
 }
 
 $( document ).ready(function() {
+/*
+$("#timelinesummary").mouseenter(function() {
+$(this).css('height', '900px');
+});
+$("#timelinesummary").mouseleave(function() {
+$(this).css('height', '200px');
+});
+*/
 var input = global_input;
 if(window.location.hash.length > 1){
     //console.log(unescape(window.location.hash.substring(1)));
@@ -321,6 +334,7 @@ $("#data").append(s + '<br/>');
         dataTable.addColumn({ type: 'string', id: 'Event' });
         dataTable.addColumn({ type: 'date', id: 'Start' });
         dataTable.addColumn({ type: 'date', id: 'End' });
+        //console.log('QQQ: drawChart: ' );
         //console.log(rows);
         dataTable.addRows( rows);
 
@@ -350,19 +364,19 @@ $("#data").append(s + '<br/>');
         chart.draw(dataTable);
       }
 
+
 </script>
 </head>
 <body>
 Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
-<!-- <div id="timeline" style="width: 900px; height: 180px;"></div> -->
 <div id="message"></div>
-<div id="spinner"><image src="spinner.gif"/</div>
-<!--
-<hr/>Number of References Timeline<br/>
-<div id="timelinesummary" style="width: 900px; height: 200px;"></div>
--->
+<div id="spinner"><img src="spinner.gif"></div>
+<!-- -->
+<hr/>Number of New York State Legislative Bills Timeline<br/>
+<div class="focused" id="timelinesummary" style="width: 900px; height: 900px;"></div>
+<!-- -->
 <hr/>Details Timeline<br/>
-<div id="timeline" style="width: 900px; height: 500px;"></div>
+<div class="focused" id="timeline" style="width: 900px; height: 100px;"></div>
 <div id="data"></div>
 </body>
 </html>
