@@ -231,6 +231,7 @@ function(result){
 }
 
 function getdata_firsttime(input){
+$('#spinner').html( '<img src="spinner.gif"><b>Loading data... could be a minute or so...</b>');
 global_input=input;
 if (pending != null) {
 pending.abort();
@@ -251,9 +252,9 @@ total_on_server= 0;
 url = 'https://script.google.com/macros/s/AKfycbzm8onQ3rAGr_RWvCVhpihN8ZjNarD6VOIRVyiFFpaTg3wQSCOb/exec?type=nys-bills.jsonp&limit=10000&year=' + escape(input) + '&callback=?';
 
 
-$("#message").text("search: " + input);
+$("#message").text("Year: " + input);
 //pending = $.getJSON(url, closure1_firsttime);
-$('#spinner').html( '<img src="spinner.gif">');
+$('#spinner').html( '<img src="spinner.gif"><b>Loading data... could be a minute or so...</b>');
 pending = $.ajax({ jsonpCallback: "callback1", dataType: "json", url: url, success: closure1_firsttime, cache:true });
 }
 
@@ -368,9 +369,22 @@ $("#data").append(s + '<br/>');
 </script>
 </head>
 <body>
-Search: <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/>
+<!-- Year (2008-2015): <input id="search" onchange="getdata_firsttime(this.value);" /><br/><br/> -->
+Year: <select id="search" onchange="getdata_firsttime(this.value);">
+<option>2008</option>
+<option>2009</option>
+<option>2010</option>
+<option>2011</option>
+<option>2012</option>
+<option>2013</option>
+<option>2014</option>
+<option>2015</option>
+</select>
+<br/><br/>
 <div id="message"></div>
-<div id="spinner"><img src="spinner.gif"></div>
+<div id="spinner">
+<img src="spinner.gif"><b>Loading data... could be a minute or so...</b>
+</div>
 <!-- -->
 <hr/>Number of New York State Legislative Bills Timeline<br/>
 <div class="focused" id="timelinesummary" style="width: 900px; height: 900px;"></div>
