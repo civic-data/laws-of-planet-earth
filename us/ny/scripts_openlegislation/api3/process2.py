@@ -10,15 +10,23 @@ objectin = json.load(sys.stdin)
 csvwriter = csv.writer(sys.stdout)
 MISSING_participantsCount=-1
 
+csvwriter.writerow ( ['publishedDateTime','statusType','title','member_imgName','member_fullName','budget','rules'])
 for item in objectin:
     # print (type(item), len(item))
     for item2 in item:
         # print (type(item2), len(item2))
         # print (item2)
         try:
-            print ( item2['result']['publishedDateTime'], item2['result']['status'], item2['result']['title'],item2['result']['sponsor']['member']['imgName'])
+# image is here: http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/413_john_j._bonacic.jpg
+            # print ( item2['result']['publishedDateTime'], item2['result']['status'], item2['result']['title'],item2['result']['sponsor']['member']['imgName'])
+            csvwriter.writerow ( [item2['result']['publishedDateTime'], item2['result']['status']['statusType'], item2['result']['title'],item2['result']['sponsor']['member']['imgName'],item2['result']['sponsor']['member']['fullName'],item2['result']['sponsor']['rules'], item2['result']['sponsor']['budget']])
+
+            # print (item2['result']['status']['statusType'])
         except Exception as e:
-            print (e,'qqq:',item2)
+            try:
+                csvwriter.writerow ( [item2['result']['publishedDateTime'], item2['result']['status']['statusType'], item2['result']['title'],item2['result']['sponsor']['member'],'',item2['result']['sponsor']['rules'], item2['result']['sponsor']['budget']])
+            except Exception as e:
+                print (e,'qqq:',item2,file=sys.stderr)
 
         #sys.exit(1)
 #   {
