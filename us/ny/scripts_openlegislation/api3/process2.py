@@ -4,6 +4,8 @@ import json
 import csv
 from datetime import datetime
 
+# url -X PUT -d '{"highestScore":3}' 'https://nysenate.firebaseio.com/leaderboard.json'
+
 objectin = json.load(sys.stdin)
 csvwriter = csv.writer(sys.stdout)
 MISSING_participantsCount=-1
