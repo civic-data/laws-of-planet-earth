@@ -30,6 +30,7 @@
   <header>
     Your Government - Firebase
   </header>
+  <div id="list1"></div>
 
 <button onclick="login();">Login</button>
 <!--
@@ -118,11 +119,12 @@
             if (snapshot.val()[property].statusType == "SIGNED_BY_GOVERNOR"){
             style +=" signed";
             }
-           $("body").prepend(
+           $("#list1").prepend(
            '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
            //snapshot.val()[property].resolution+
-           snapshot.val()[property].title+
-           snapshot.val()[property].publishedDateTime+
+           '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
+           snapshot.val()[property].title+"&nbsp;" + 
+           snapshot.val()[property].publishedDateTime+"&nbsp;" + 
            snapshot.val()[property].statusType
            + '</span>'
            );
