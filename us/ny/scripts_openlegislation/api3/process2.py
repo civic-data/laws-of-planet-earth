@@ -10,7 +10,7 @@ objectin = json.load(sys.stdin)
 csvwriter = csv.writer(sys.stdout)
 MISSING_participantsCount=-1
 
-csvwriter.writerow ( ['publishedDateTime','statusType','title','member_imgName','member_fullName','budget','rules'])
+csvwriter.writerow ( ['publishedDateTime','statusType','title','member_imgName','member_fullName','budget','rules','signed','adopted','resolution'])
 for item in objectin:
     # print (type(item), len(item))
     for item2 in item:
