@@ -19,12 +19,12 @@ for item in objectin:
         try:
 # image is here: http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/413_john_j._bonacic.jpg
             # print ( item2['result']['publishedDateTime'], item2['result']['status'], item2['result']['title'],item2['result']['sponsor']['member']['imgName'])
-            csvwriter.writerow ( [item2['result']['publishedDateTime'], item2['result']['status']['statusType'], item2['result']['title'],item2['result']['sponsor']['member']['imgName'],item2['result']['sponsor']['member']['fullName'],item2['result']['sponsor']['rules'], item2['result']['sponsor']['budget']])
+            csvwriter.writerow([item2['result']['publishedDateTime'], item2['result']['status']['statusType'], item2['result']['title'], item2['result']['sponsor']['member']['imgName'], item2['result']['sponsor']['member']['fullName'], item2['result']['sponsor']['rules'], item2['result']['sponsor']['budget'], item2['result']['signed'], item2['result']['adopted'], item2['result']['billType']['resolution']])
 
             # print (item2['result']['status']['statusType'])
         except Exception as e:
             try:
-                csvwriter.writerow ( [item2['result']['publishedDateTime'], item2['result']['status']['statusType'], item2['result']['title'],item2['result']['sponsor']['member'],'',item2['result']['sponsor']['rules'], item2['result']['sponsor']['budget']])
+                csvwriter.writerow ( [item2['result']['publishedDateTime'], item2['result']['status']['statusType'], item2['result']['title'],item2['result']['sponsor']['member'],'',item2['result']['sponsor']['rules'], item2['result']['sponsor']['budget'],item2['result']['signed'], item2['result']['adopted'], item2['result']['billType']['resolution']])
             except Exception as e:
                 print (e,'qqq:',item2,file=sys.stderr)
 
