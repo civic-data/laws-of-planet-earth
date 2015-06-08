@@ -100,7 +100,8 @@
           this.changeCity();
         }
         var ref = new Firebase("https://nysenate.firebaseio.com/bills");
-        ref.orderByChild("publishedDateTime").limitToLast(100000).on("child_added", function(snapshot) {
+        // ref.orderByChild("publishedDateTime").limitToLast(100000).on("child_added", function(snapshot) {
+        ref.orderByChild("publishedDateTime").limitToLast(100).on("child_added", function(snapshot) {
           //console.log(snapshot.key());
           //console.log(snapshot.val());
           for (var property in snapshot.val()){
