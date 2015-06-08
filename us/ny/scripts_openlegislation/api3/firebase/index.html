@@ -6,7 +6,7 @@
 <head>
 
 <style>
-#message1 {background-color: LightGray;}
+#message1 {height: 200px; background-color: LightGray;}
 .law {background-color: Chartreuse;}
 .resolution {background-color: AliceBlue;}
 .signed {display:block; background-color: Gold;}
@@ -128,11 +128,14 @@
             if (snapshot.val()[property].statusType == "SIGNED_BY_GOVERNOR"){
             style +=" signed";
             }
+           //console.log( snapshot.key());
+           //console.log( property);
+           //console.log( property.replace('-','/'));
            $("#message1").html(
            '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
            //snapshot.val()[property].resolution+
            '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
-           '<a href="'+'http://openleg-dev.nysenate.gov/bills/%s?search=&searchPage=1' % snapshot.key().replace('-','/') +'">link</a>' + "&nbsp;" +
+           '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" +
            snapshot.val()[property].fullName+"&nbsp;" + 
            snapshot.val()[property].title+"&nbsp;" + 
            snapshot.val()[property].publishedDateTime+"&nbsp;" + 
@@ -143,6 +146,7 @@
            '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
            //snapshot.val()[property].resolution+
            '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
+           '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" +
            snapshot.val()[property].fullName+"&nbsp;" + 
            snapshot.val()[property].title+"&nbsp;" + 
            snapshot.val()[property].publishedDateTime+"&nbsp;" + 
@@ -154,6 +158,7 @@
            '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
            //snapshot.val()[property].resolution+
            '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
+           '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" +
            snapshot.val()[property].fullName+"&nbsp;" + 
            snapshot.val()[property].title+"&nbsp;" + 
            snapshot.val()[property].publishedDateTime+"&nbsp;" + 
