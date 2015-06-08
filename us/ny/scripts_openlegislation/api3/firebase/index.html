@@ -31,11 +31,17 @@
   <header>
     Your Government - Firebase
   </header>
+  <p>
+  This is your government in action.  Between 2009 - June 2015 there are between 26K Resolutions, 70K Bills, and only 5% have become laws.
+  Here is the parade of bills.
+  </p>
+<button onclick="login();">Login</button>
+<button onclick="sort_descending();">Z - A</button>
+<button onclick="sort_ascending();">A - Z</button>
   <div id="message1"></div>
   <hr/>
   <div id="list1"></div>
 
-<button onclick="login();">Login</button>
 <!--
   <div class="weather-opendata-example">
       <div>
@@ -126,11 +132,13 @@
            '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
            //snapshot.val()[property].resolution+
            '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
+           '<a href="'+'http://openleg-dev.nysenate.gov/bills/%s?search=&searchPage=1' % snapshot.key().replace('-','/') +'">link</a>' + "&nbsp;" +
            snapshot.val()[property].fullName+"&nbsp;" + 
            snapshot.val()[property].title+"&nbsp;" + 
            snapshot.val()[property].publishedDateTime+"&nbsp;" + 
            snapshot.val()[property].statusType
            );
+           if (sort==="ascending"){
            $("#list1").prepend(
            '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
            //snapshot.val()[property].resolution+
@@ -141,6 +149,18 @@
            snapshot.val()[property].statusType
            + '</span> &mdash;'
            );
+           } else {
+           $("#list1").append(
+           '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
+           //snapshot.val()[property].resolution+
+           '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
+           snapshot.val()[property].fullName+"&nbsp;" + 
+           snapshot.val()[property].title+"&nbsp;" + 
+           snapshot.val()[property].publishedDateTime+"&nbsp;" + 
+           snapshot.val()[property].statusType
+           + '</span> &mdash;'
+           );
+           }
           }
           //console.log(snapshot.child('imgName').val());
           //console.log(snapshot.val().imgName);
@@ -213,7 +233,14 @@
         this.$weatherSummary.html(data.summary);
       }
     };
+    var sort="descending";
 
+    function sort_ascending(){
+    sort="ascending";
+    }
+    function sort_descending(){
+    sort="descending";
+    }
     function login(){
     var ref = new Firebase("https://nysenate.firebaseio.com");
 
