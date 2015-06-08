@@ -23,7 +23,11 @@ for item in objectin:
 # image is here: http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/413_john_j._bonacic.jpg
             # print ( item2['result']['publishedDateTime'], item2['result']['status'], item2['result']['title'],item2['result']['sponsor']['member']['imgName'])
             params = {"%s-%s"%(item2['result']['session'],item2['result']['printNo']):{
-                   "publishedDateTime": item2['result']['publishedDateTime'], "statusType": item2['result']['status']['statusType'], "title": item2['result']['title'], "imgName": item2['result']['sponsor']['member']['imgName'], "fullName": item2['result']['sponsor']['member']['fullName'], "rules": item2['result']['sponsor']['rules'], "budget": item2['result']['sponsor']['budget'],"signed":item2['result']['signed'],"adopted":item2['result']['adopted'],"resolution":item2['result']['billType']['resolution']
+                   "publishedDateTime": item2['result']['publishedDateTime'], "statusType": item2['result']['status']['statusType'], "title": item2['result']['title'], "imgName": item2['result']['sponsor']['member']['imgName'], "fullName": item2['result']['sponsor']['member']['fullName'], "rules": item2['result']['sponsor']['rules'], "budget": item2['result']['sponsor']['budget'],"signed":item2['result']['signed'],"adopted":item2['result']['adopted'],"resolution":item2['result']['billType']['resolution'],"printNo":item2['result']['printNo'],"session::item2['result']['session']
+
+# "printNo" : "J2697",
+# "session" : 2015,
+
                    }}
             print(params)
             r=requests.post("https://nysenate.firebaseio.com/bills.json?auth=%s" % secrets.FIREBASE_AUTH,
