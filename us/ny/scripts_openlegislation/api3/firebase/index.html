@@ -152,8 +152,8 @@ ref.orderByChild("publishedDateTime").limitToFirst(10).on("child_added", functio
 
 
 //var PAGESIZE=3;
-var PAGESIZE=21;
-//var PAGESIZE=1000;
+//var PAGESIZE=21;
+var PAGESIZE=1000;
 var SORTKEY="publishedDateTime";
 //var SORTKEY="title";
 
@@ -172,28 +172,14 @@ ref.limitToFirst(PAGESIZE).on("child_added", function(snap) {
 
         var list2=[];
 
+/*
         ref.orderByChild(SORTKEY).limitToFirst(PAGESIZE).on("child_added", function(snapshot) {
 
           for (var property in snapshot.val()){
-            list2.push(snapshot.val())
+            list2.push(snapshot.val());
           }
 
           for (var property in snapshot.val()){
-            /*
-            34,232  IN_ASSEMBLY_COMM
-            25,365  ADOPTED
-            25,024  IN_SENATE_COMM
-            3,337   SENATE_FLOOR
-            3,329   SIGNED_BY_GOV
-            2,576   ASSEMBLY_FLOOR
-            2,453   STRICKEN
-            542 VETOED
-            65  LOST
-            59  PASSED_SENATE
-            54  PASSED_ASSEMBLY
-            5   INTRODUCED
-            1   DELIVERED_TO_GOV
-            */
             var style="law";
             if (snapshot.val()[property].resolution){
             style="resolution";
@@ -244,8 +230,17 @@ ref.limitToFirst(PAGESIZE).on("child_added", function(snap) {
           //console.log(snapshot.val().imgName);
           //console.log(snapshot.key());
           });
+*/
 
         ref.orderByChild(SORTKEY).limitToFirst(PAGESIZE).on("value", function(snapshot) {
+        //ref.orderByChild(SORTKEY).limitToLast(PAGESIZE).on("value", function(snapshot) {
+        //console.log(JSON.stringify(snapshot.val()));
+        /**/
+          for (var property in snapshot.val()){
+          //console.log(snapshot.val()[property]);
+            list2.push(snapshot.val()[property]);
+          }
+/**/
         list2=list2.sort(compare);
         /**/
         //console.log('done2:');
