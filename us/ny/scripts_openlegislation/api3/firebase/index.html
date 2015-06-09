@@ -100,12 +100,37 @@
           this.changeCity();
         }
         var ref = new Firebase("https://nysenate.firebaseio.com/bills");
-        // ref.orderByChild("publishedDateTime").limitToLast(100000).on("child_added", function(snapshot) {
-        ref.orderByChild("publishedDateTime").limitToLast(100).on("child_added", function(snapshot) {
+
+
+var PAGESIZE=3;
+//var SORTKEY="publishedDateTime";
+var SORTKEY="title";
+
+var count = 0;
+// length will always equal count, since snap.val() will include every child_added event
+// triggered before this point
+ref.limitToFirst(PAGESIZE).once("value", function(snap) {
+    console.log("initial data loaded!", Object.keys(snap.val()).length === count);
+});
+ref.limitToFirst(PAGESIZE).on("child_added", function(snap) {
+    count++;
+    console.log("added", JSON.stringify(snap.val()));
+});
+
+
+        // ref.orderByChild(SORTKEY).limitToLast(100000).on("child_added", function(snapshot) {
+
+        //ref.orderByChild(SORTKEY).limitToFirst(1000).on("child_added", function(snapshot) {
+        ref.orderByChild(SORTKEY).limitToFirst(PAGESIZE).on("child_added", function(snapshot) {
+
+        //ref.orderByChild(SORTKEY).limitToFirst(1000).on("value", function(snapshot) {
+        //ref.orderByValue().limitToFirst(2000).on("child_added", function(snapshot) {
           //console.log(snapshot.key());
           //console.log(snapshot.val());
+          //console.log("XXX"+JSON.stringify(snapshot.val()));
           for (var property in snapshot.val()){
-            //console.log('property:'+snapshot.val()[property].imgName);
+            //console.log('property:'+snapshot.val()[property].publishedDateTime);
+            console.log('property:'+snapshot.val()[property].title);
             //console.log(JSON.stringify(snapshot.val()));
             /*
             34,232  IN_ASSEMBLY_COMM
@@ -269,6 +294,11 @@
     }
 
     $(document).ready(function(){
+    if (window.location.hash.length > 1) {
+        console.log(unescape(window.location.hash.substring(1)));
+        //input = unescape(window.location.hash.substring(1));
+        //$("#search").val(input);
+    }
         //login();
       weather.init();
     });
