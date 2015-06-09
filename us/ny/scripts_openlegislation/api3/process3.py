@@ -22,15 +22,16 @@ for item in objectin:
         try:
 # image is here: http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/413_john_j._bonacic.jpg
             # print ( item2['result']['publishedDateTime'], item2['result']['status'], item2['result']['title'],item2['result']['sponsor']['member']['imgName'])
-            params = {"%s-%s"%(item2['result']['session'],item2['result']['printNo']):{
+            # params = {"%s-%s"%(item2['result']['session'],item2['result']['printNo']):{
+            params = {"session":item2['result']['session'],"printNo":item2['result']['printNo'],
                    "publishedDateTime": item2['result']['publishedDateTime'], "statusType": item2['result']['status']['statusType'], "title": item2['result']['title'], "imgName": item2['result']['sponsor']['member']['imgName'], "fullName": item2['result']['sponsor']['member']['fullName'], "rules": item2['result']['sponsor']['rules'], "budget": item2['result']['sponsor']['budget'],"signed":item2['result']['signed'],"adopted":item2['result']['adopted'],"resolution":item2['result']['billType']['resolution'],"printNo":item2['result']['printNo'],"session::item2['result']['session']
 
 # "printNo" : "J2697",
 # "session" : 2015,
 
-                   }}
+                   }
             print(params)
-            r=requests.post("https://nysenate.firebaseio.com/bills.json?auth=%s" % secrets.FIREBASE_AUTH,
+            r=requests.post("https://nysenate.firebaseio.com/bills2.json?auth=%s" % secrets.FIREBASE_AUTH,
                data = json.dumps(params))
 
             # print (item2['result']['status']['statusType'])
@@ -41,11 +42,11 @@ for item in objectin:
             # print(e)
             try: 
                 #csvwriter.writerow ( [item2['result']['publishedDateTime'], item2['result']['status']['statusType'], item2['result']['title'],item2['result']['sponsor']['member'],'',item2['result']['sponsor']['rules'], item2['result']['sponsor']['budget']])
-                params = {"%s-%s"%(item2['result']['session'],item2['result']['printNo']):{
+                params = {"session":item2['result']['session'],"printNo":item2['result']['printNo'],
                        "publishedDateTime": item2['result']['publishedDateTime'], "statusType": item2['result']['status']['statusType'], "title": item2['result']['title'], "imgName": "", "rules": item2['result']['sponsor']['rules'], "budget": item2['result']['sponsor']['budget'],"signed":item2['result']['signed'],"adopted":item2['result']['adopted'],"resolution":item2['result']['billType']['resolution']
-                       }}
+                       }
                 print(params)
-                r=requests.post("https://nysenate.firebaseio.com/bills.json?auth=%s" % secrets.FIREBASE_AUTH,
+                r=requests.post("https://nysenate.firebaseio.com/bills2.json?auth=%s" % secrets.FIREBASE_AUTH,
                    data = json.dumps(params))
             except Exception as e:
                 print(e)
