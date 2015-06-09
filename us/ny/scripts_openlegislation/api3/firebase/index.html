@@ -99,6 +99,19 @@
           this.renderFormOptions();
           this.changeCity();
         }
+
+/* simple test */
+/*
+Firebase.INTERNAL.forceLongPolling();
+var ref = new Firebase("https://nysenate.firebaseio.com/bills");
+ref.orderByChild("publishedDateTime").limitToFirst(10).on("child_added", function(snapshot) {
+
+    for (var property in snapshot.val()) {
+        console.log('property:' + snapshot.val()[property].publishedDateTime);
+    }
+})
+*/
+
         var ref = new Firebase("https://nysenate.firebaseio.com/bills");
         // ref.orderByChild("publishedDateTime").limitToLast(100000).on("child_added", function(snapshot) {
         ref.orderByChild("publishedDateTime").limitToLast(100).on("child_added", function(snapshot) {
