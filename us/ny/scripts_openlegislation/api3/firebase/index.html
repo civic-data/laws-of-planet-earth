@@ -32,7 +32,7 @@
     Your Government - Firebase
   </header>
   <p>
-  This is your government in action.  Between 2009 - June 2015 there are approximately 26K Resolutions, 70K Bills, and only approximately 5% have become laws.
+  This is your government in action.  Between 2009 - June 2015 there are approximately 26K Resolutions, 70K Bills, and only approximately 5% have become laws. Search for "SIGNED_BY_GOV" and you will see the few bills that become law.
   Here is the parade of bills.
   </p>
 <button onclick="login();">Login</button>
@@ -62,32 +62,74 @@
   -->
 
   <script>
+
+        var ref = new Firebase("https://nysenate.firebaseio.com/bills2");
+
+
+//var PAGESIZE=3;
+//var PAGESIZE=21;
+//var PAGESIZE=1000;
+var PAGESIZE=500;
+//var PAGESIZE=1;
+var SORTKEY="publishedDateTime";
+//var SORTKEY="title";
+
+var count = 0;
+// length will always equal count, since snap.val() will include every child_added event
+// triggered before this point
+
+        var list2=[];
+
+function setup(type1) {
+var ref1 = ref.orderByChild(SORTKEY);
+if (type1==="ascending"){
+    ref1 = ref1.limitToFirst(PAGESIZE);
+} else {
+    ref1 = ref1.limitToLast(PAGESIZE);
+}
+
+        ref1.on("value", function(snapshot) {
+                //console.log(JSON.stringify(snapshot.val()));
+                /**/
+                for (var property in snapshot.val()) {
+                    //console.log(snapshot.val()[property]);
+                    list2.push(snapshot.val()[property]);
+                }
+                /**/
+                list2 = list2.sort(compare);
+                /**/
+                //console.log('done2:');
+                //console.log(JSON.stringify(list2));
+                for (var i = 0, len = list2.length; i < len; i++) {
+                    //console.log(list2[i].publishedDateTime);
+                    //console.log(JSON.stringify(list2[i]));
+                    show(list2[i]);
+                }
+                /**/
+            });
+        }
+
   function show(item) {
-          for (var property in item) {
-          console.log(item[property].publishedDateTime);
+  //console.log('show:'+ JSON.stringify(item));
+          //for (var property in item) {
+          console.log(item.publishedDateTime);
               var style = "law";
-              if (item[property].resolution) {
+              if (item.resolution) {
                   style = "resolution";
               }
-              if (item[property].statusType == "SIGNED_BY_GOV") {
+              if (item.statusType == "SIGNED_BY_GOV") {
                   style += " signed";
               }
-              $("#message1").html('<span class="' + style + '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/' + item[property].imgName + '">' + '<b>' + (item[property].resolution ? "Resolution" : "Bill") + "</b>&nbsp;" + '<a href="' + 'http://openleg-dev.nysenate.gov/bills/' + property.replace('-', '/') + '?search=&searchPage=1">link</a>' + "&nbsp;" + item[property].fullName + "&nbsp;" + item[property].title + "&nbsp;" + item[property].publishedDateTime + "&nbsp;" + item[property].statusType);
+              $("#message1").html('<span class="' + style + '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/' + item.imgName + '">' + '<b>' + (item.resolution ? "Resolution" : "Bill") + "</b>&nbsp;" + '<a href="' + 'http://openleg-dev.nysenate.gov/bills/' + item.session + '/' + item.printNo + '?search=&searchPage=1">link</a>' + "&nbsp;" + item.fullName + "&nbsp;" + item.title + "&nbsp;" + item.publishedDateTime + "&nbsp;" + item.statusType);
               if (sort === "ascending") {
-                  $("#list1").prepend('<span class="' + style + '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/' + item[property].imgName + '">' +  '<b>' + (item[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" + item[property].fullName+"&nbsp;" + item[property].title+"&nbsp;" + item[property].publishedDateTime+"&nbsp;" + item[property].statusType + '</span> &mdash;');
+                  $("#list1").prepend('<span class="' + style + '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/' + item.imgName + '">' +  '<b>' + (item.resolution?"Resolution":"Bill")+"</b>&nbsp;" + '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + item.session + '/' + item.printNo + '?search=&searchPage=1">link</a>' + "&nbsp;" + item.fullName+"&nbsp;" + item.title+"&nbsp;" + item.publishedDateTime+"&nbsp;" + item.statusType + '</span> &mdash;');
                   } else {
-                      $("#list1").append('<span class="' + style + '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/' + item[property].imgName + '">' + '<b>' + (item[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" + item[property].fullName+"&nbsp;" + item[property].title+"&nbsp;" + item[property].publishedDateTime+"&nbsp;" + item[property].statusType + '</span> &mdash;');
+                      $("#list1").append('<span class="' + style + '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/' + item.imgName + '">' + '<b>' + (item.resolution?"Resolution":"Bill")+"</b>&nbsp;" + '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + item.session + '/' + item.printNo + '?search=&searchPage=1">link</a>' + "&nbsp;" + item.fullName+"&nbsp;" + item.title+"&nbsp;" + item.publishedDateTime+"&nbsp;" + item.statusType + '</span> &mdash;');
                       }
-                  }
+                  //}
               }
 
   function compare(a, b) {
-  for(var property in a){
-    a=a[property];
-  }
-  for(var property in b){
-    b=b[property];
-  }
   var retval=0;
       if (a.publishedDateTime < b.publishedDateTime)
           retval = -1;
@@ -135,124 +177,9 @@
           this.renderFormOptions();
           this.changeCity();
         }
+        //setup("ascending");
+        setup("descending");
 
-/* simple test */
-/*
-Firebase.INTERNAL.forceLongPolling();
-var ref = new Firebase("https://nysenate.firebaseio.com/bills");
-ref.orderByChild("publishedDateTime").limitToFirst(10).on("child_added", function(snapshot) {
-
-    for (var property in snapshot.val()) {
-        console.log('property:' + snapshot.val()[property].publishedDateTime);
-    }
-})
-*/
-
-        var ref = new Firebase("https://nysenate.firebaseio.com/bills");
-
-
-//var PAGESIZE=3;
-//var PAGESIZE=21;
-var PAGESIZE=1000;
-//var PAGESIZE=1;
-var SORTKEY="publishedDateTime";
-//var SORTKEY="title";
-
-var count = 0;
-// length will always equal count, since snap.val() will include every child_added event
-// triggered before this point
-/*
-ref.limitToFirst(PAGESIZE).once("value", function(snap) {
-    console.log("initial data loaded!", Object.keys(snap.val()).length === count);
-});
-ref.limitToFirst(PAGESIZE).on("child_added", function(snap) {
-    count++;
-    console.log("added", JSON.stringify(snap.val()));
-});
-*/
-
-        var list2=[];
-
-/*
-        ref.orderByChild(SORTKEY).limitToFirst(PAGESIZE).on("child_added", function(snapshot) {
-
-          for (var property in snapshot.val()){
-            list2.push(snapshot.val());
-          }
-
-          for (var property in snapshot.val()){
-            var style="law";
-            if (snapshot.val()[property].resolution){
-            style="resolution";
-            }
-            if (snapshot.val()[property].statusType == "SIGNED_BY_GOV"){
-            style +=" signed";
-            }
-           //console.log( snapshot.key());
-           //console.log( property);
-           //console.log( property.replace('-','/'));
-           $("#message2").html(
-           '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
-           //snapshot.val()[property].resolution+
-           '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
-           '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" +
-           snapshot.val()[property].fullName+"&nbsp;" + 
-           snapshot.val()[property].title+"&nbsp;" + 
-           snapshot.val()[property].publishedDateTime+"&nbsp;" + 
-           snapshot.val()[property].statusType
-           );
-           if (sort==="ascending"){
-           $("#list2").prepend(
-           '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
-           //snapshot.val()[property].resolution+
-           '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
-           '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" +
-           snapshot.val()[property].fullName+"&nbsp;" + 
-           snapshot.val()[property].title+"&nbsp;" + 
-           snapshot.val()[property].publishedDateTime+"&nbsp;" + 
-           snapshot.val()[property].statusType
-           + '</span> &mdash;'
-           );
-           } else {
-           $("#list2").append(
-           '<span class="'+ style+ '"><img src="http://openleg-dev.nysenate.gov/static/img/business_assets/members/mini/'+snapshot.val()[property].imgName+'">'+
-           //snapshot.val()[property].resolution+
-           '<b>' + (snapshot.val()[property].resolution?"Resolution":"Bill")+"</b>&nbsp;" + 
-           '<a href="'+'http://openleg-dev.nysenate.gov/bills/' + property.replace('-','/') + '?search=&searchPage=1">link</a>' + "&nbsp;" +
-           snapshot.val()[property].fullName+"&nbsp;" + 
-           snapshot.val()[property].title+"&nbsp;" + 
-           snapshot.val()[property].publishedDateTime+"&nbsp;" + 
-           snapshot.val()[property].statusType
-           + '</span> &mdash;'
-           );
-           }
-          }
-          //console.log(snapshot.child('imgName').val());
-          //console.log(snapshot.val().imgName);
-          //console.log(snapshot.key());
-          });
-*/
-
-        ref.orderByChild(SORTKEY).limitToFirst(PAGESIZE).on("value", function(snapshot) {
-        //ref.orderByChild(SORTKEY).limitToLast(PAGESIZE).on("value", function(snapshot) {
-        //console.log(JSON.stringify(snapshot.val()));
-        /**/
-          for (var property in snapshot.val()){
-          //console.log(snapshot.val()[property]);
-            list2.push(snapshot.val()[property]);
-          }
-/**/
-        list2=list2.sort(compare);
-        /**/
-        //console.log('done2:');
-        //console.log(JSON.stringify(list2));
-        for (var i = 0, len = list2.length; i < len; i++) {
-            //console.log(list2[i].publishedDateTime);
-            //console.log(JSON.stringify(list2[i]));
-            show(list2[i]);
-        }
-        /**/
-        });
       },
 
       /*
@@ -322,11 +249,17 @@ ref.limitToFirst(PAGESIZE).on("child_added", function(snap) {
     };
     var sort="descending";
 
-    function sort_ascending(){
-    sort="ascending";
+    function sort_ascending() {
+    list2=[];
+        sort = "ascending";
+        setup("ascending");
     }
-    function sort_descending(){
-    sort="descending";
+
+    function sort_descending() {
+    list2=[];
+        sort = "descending";
+        setup("descending");
+
     }
     function login(){
     var ref = new Firebase("https://nysenate.firebaseio.com");
